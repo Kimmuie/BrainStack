@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth;}
+
+@theme {
+  --color-Primary: #A98B76;
+  --color-Darker-Primary-1: #dba13b;
+  --color-Darker-Primary-2: #c38f34;
+  --color-Secondary: #1A3263;
+  --color-Darker-Secondary-1: #172d59;
+  --color-Darker-Secondary-2: #14284f;
+  --color-White: #E8E2DB;
+  --color-Black: #313647;
+}
