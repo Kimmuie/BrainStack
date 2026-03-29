@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-// import { auth } from "./firebase";
-// import { signOut } from "firebase/auth";
+import { auth } from "./firebase";
+import { signOut } from "firebase/auth";
 import Alert from "./Alert";
 
 const SignOut = ({ setUser }) => {
@@ -11,14 +11,14 @@ const SignOut = ({ setUser }) => {
   };
   
   const confirmSignout = () => {
-    // signOut(auth)
-    //   .then(() => {
-    //     localStorage.removeItem("email");
-    //     setUser(null);
-    //     console.log("Log Out Success");
-    //     setShowAlert(false);
-    //   })
-    //   .catch((error) => console.error("Logout Failed", error));
+    signOut(auth)
+      .then(() => {
+        localStorage.removeItem("email");
+        setUser(null);
+        console.log("Log Out Success");
+        setShowAlert(false);
+      })
+      .catch((error) => console.error("Logout Failed", error));
   };
 
   return (

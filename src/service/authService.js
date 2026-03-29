@@ -34,9 +34,7 @@ export const register = async (email, password, username) => {
 export const login = async (email, password) => {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
-    const token = await result.user.getIdToken();
 
-    localStorage.setItem("token", token);
     localStorage.setItem("email", result.user.email);
 
     return result.user;
@@ -50,7 +48,6 @@ export const login = async (email, password) => {
 export const logout = async () => {
   try {
     await signOut(auth);
-    localStorage.removeItem("token");
     localStorage.removeItem("email");
   } catch (err) {
     console.error("Logout error:", err.message);

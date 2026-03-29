@@ -1,17 +1,28 @@
 import React from "react";
-// import { auth, provider } from "./firebase";
-// import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "./firebase";
+import { signInWithPopup } from "firebase/auth";
+
 
 const SignIn = ({ setUser }) => {
+    const handleClick = async () => {
 
-    // Authentication with Google using Firebase - แก้ด้วยเด้อ
-    const handleClick = () => {
-        signInWithPopup(auth, provider).then((data) => {
+        try {
+        const data = await signInWithPopup(auth, provider);
         const email = data.user.email;
+        const username = data.user.displayName;
+
+        await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, username, theme: "light" })
+        });
+
         localStorage.setItem("email", email);
         setUser(email);
         console.log("Log In Success");
-        });
+        } catch (err) {
+        console.error("Login error:", err.message);
+        }
     };
 
     return (
