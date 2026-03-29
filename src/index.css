@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Playwrite_IE";
+  src: url("../src/assets/fonts/Playwrite_IE/PlaywriteIE-Regular.ttf") format("truetype");
+}
+
 @import "tailwindcss";
 
 * {
@@ -6,13 +11,63 @@
 
 html { scroll-behavior: smooth;}
 
+body {
+  background-color: var(--color-Secondary);
+  background-image: url("/img/brain_pattern.jpg");
+  background-repeat: repeat;
+  background-blend-mode: multiply;
+  background-size: 500px 500px;
+}
+
 @theme {
-  --color-Primary: #A98B76;
-  --color-Darker-Primary-1: #dba13b;
-  --color-Darker-Primary-2: #c38f34;
-  --color-Secondary: #1A3263;
-  --color-Darker-Secondary-1: #172d59;
-  --color-Darker-Secondary-2: #14284f;
-  --color-White: #E8E2DB;
-  --color-Black: #313647;
+  --font-playwrite: "Playwrite_IE", sans-serif;
+  --color-Primary: #D2AB61;
+  --color-Darker-Primary: #c09957;
+  --color-Secondary: #313647;
+  /* FAF8F1 Bright Theme */
+  --color-Darker-Secondary: #2c303f;
+  --color-Tertiary: #FAF8F1;
+  --color-custom-red: #DC0E0E;
+
+  --animate-fadeInUp: fadeInUp 0.5s ease-in-out;
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+@media screen and (orientation: landscape) and (max-height: 50rem) and (max-width: 64rem) {
+  .hiddenLandscapePhone {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 50rem) {
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-Tertiary);
+  z-index: 10;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-Primary);
+  z-index: 10;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-Darker-Primary);
 }
