@@ -117,7 +117,7 @@ const initDB = async () => {
 
 
 //Route for Users
-app.post('/users', async (req, res) => {
+app.post('/Brainstack_test/users', async (req, res) => {
     const { email, username, theme} = req.body;
 
     try {
@@ -131,7 +131,7 @@ app.post('/users', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.get('/users/:email', async (req, res) => {
+app.get('/Brainstack_test/users/:email', async (req, res) => {
     const { email } = req.params;
 
     try {
@@ -142,16 +142,29 @@ app.get('/users/:email', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.post('/user/:email/tag', async (req, res) => {
+app.post('/Brainstack_test/users/:email/tag', async (req, res) => {
     const { email } = req.params;
     const { tagName, tagGroup } = req.body;
 
     try {
-        await db.collection('user').updateOne(
+        await db.collection('users').updateOne(
             { email },
-            { $addToSet: { tag: { tagName, tagGruop: tagGroup || [] } } }
+            { $addToSet: { tag: { tagName, tagGroup: tagGroup || [] } } }
         );
-        res.json({ succes: ture });
+        res.json({ succes: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+app.delete('/Brainstack_test/users/:email', async (req, res) => {
+    const { email } = req.params;
+
+    try {
+        const result = await db.collection('users').deleteOne({ email });
+        if(result.deletedCount === 0) {
+            return res.status(404).json({ error: 'User not found'});
+        }
+        res.json({ message: `${email} delete successfully` });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -160,13 +173,13 @@ app.post('/user/:email/tag', async (req, res) => {
 
 
 //Route for Group
-app.post('/gruops', async (req, res) => {
+app.post('/Brainstack_test/groups', async (req, res) => {
     const { groupName, creatorEmail } = req.body;
 
     try {
-        const groupCode = crypto.randomBytes(3).toString('Hex');
+        const groupCode = crypto.randomBytes(3).toString('hex');
 
-        await db.collection('gruops').insertOne(
+        await db.collection('groups').insertOne(
             {
                 groupCode,
                 groupName,
@@ -178,11 +191,12 @@ app.post('/gruops', async (req, res) => {
             { email: creatorEmail },
             { $addToSet: { group: groupCode} }
         );
+        res.json({ succes: true, groupCode});
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
-app.get('/groups/:groupCode', async (req, res) => {
+app.get('/Brainstack_test/groups/:groupCode', async (req, res) => {
     const { groupCode } = req.params;
 
     try {
@@ -193,11 +207,12 @@ app.get('/groups/:groupCode', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.post('/groups/:groupCode/join', async (req, res) => {
+app.post('/Brainstack_test/groups/:groupCode/join', async (req, res) => {
     const { groupCode } = req.params;
     const { email } = req.body;
 
     try {
+
         await db.collection('groups').updateOne(
             { groupCode },
             { $addToSet: { "groupData.groupUsers": email } }
@@ -206,6 +221,27 @@ app.post('/groups/:groupCode/join', async (req, res) => {
             { email },
             { $addToSet: { group: groupCode } }
         );
+        res.json({ success: true })
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+app.delete('/Brainstack_test/groups/:groupCode', async (req, res) => {
+    const { groupCode } = req.params;
+
+    try {
+
+        const groupResult = await db.collection('groups').deleteOne({ groupCode });
+        if (groupResult.deletedCount === 0) {
+            return res.status(404).json({ error: 'Group not found' });
+        }
+
+        await db.collection('users').updateMany(
+            { group: groupCode },           
+            { $pull: { group: groupCode } } 
+        );
+
+        res.json({ message: `Group ${groupCode} deleted successfully` });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -214,7 +250,7 @@ app.post('/groups/:groupCode/join', async (req, res) => {
 
 
 //Route for Idea
-app.post("/groups/:groupCode/idea", async (req, res) => {
+app.post("/Brainstack_test/groups/:groupCode/idea", async (req, res) => {
     const { groupCode } = req.params;
     const { ideaDescription, ideaCreateBy } = req.body;
 
@@ -234,7 +270,7 @@ app.post("/groups/:groupCode/idea", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.post("/groups/:groupCode/idea/:index/downvote", async (req, res) => {
+app.post("/Brainstack_test/groups/:groupCode/idea/:index/downvote", async (req, res) => {
     const { groupCode, index } = req.params;
 
     try {
@@ -247,7 +283,7 @@ app.post("/groups/:groupCode/idea/:index/downvote", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.post("/groups/:groupCode/idea/:index/upvote", async (req, res) => {
+app.post("/Brainstack_test/groups/:groupCode/idea/:index/upvote", async (req, res) => {
     const { groupCode, index } = req.params;
 
     try {
@@ -260,9 +296,52 @@ app.post("/groups/:groupCode/idea/:index/upvote", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+app.delete('/Brainstack_test/groups/:groupCode/idea/:index', async (req, res) => {
+    const { groupCode, index } = req.params;
+    try {
+        const group = await db.collection('groups').findOne({ groupCode });
+        if (!group) return res.status(404).json({ error: 'Group not found' });
+
+        // เอา idea ออกจาก array ด้วย index
+        group.groupCase.caseIdeas.splice(index, 1);
+
+        await db.collection('groups').updateOne(
+            { groupCode },
+            { $set: { "groupCase.caseIdeas": group.groupCase.caseIdeas } }
+        );
+
+        res.json({ message: `Idea deleted successfully` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+app.delete('/Brainstack_test/groups/:groupCode/idea/:index/upvote', async (req, res) => {
+    const { groupCode, index } = req.params;
+    try {
+        await db.collection('groups').updateOne(
+            { groupCode },
+            { $inc: { [`groupCase.caseIdeas.${index}.ideaUpvote`]: -1 } }
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+app.delete('/Brainstack_test/groups/:groupCode/idea/:index/downvote', async (req, res) => {
+    const { groupCode, index } = req.params;
+    try {
+        await db.collection('groups').updateOne(
+            { groupCode },
+            { $inc: { [`groupCase.caseIdeas.${index}.ideaDownvote`]: -1 } }
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // Route for Comments
-app.post("/api/groups/:groupCode/idea/:index/comment", async (req, res) => {
+app.post("/Brainstack_test/api/groups/:groupCode/idea/:index/comment", async (req, res) => {
     const { groupCode, index } = req.params;
     const { commentData, commentUser } = req.body;
     try {
@@ -278,7 +357,45 @@ app.post("/api/groups/:groupCode/idea/:index/comment", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+app.get('/Brainstack_test/groups/:groupCode/idea/:index/comment', async (req, res) => {
+    const { groupCode, index } = req.params;
+    try {
+        const group = await db.collection('groups').findOne({ groupCode });
+        if (!group) return res.status(404).json({ error: 'Group not found' });
 
+        const comments = group.groupCase.caseIdeas[index].ideaComment;
+
+        res.json(comments);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+app.delete('/Brainstack_test/groups/:groupCode/idea/:index/comment/:commentIndex', async (req, res) => {
+    const { groupCode, index, commentIndex } = req.params;
+    try {
+        const group = await db.collection('groups').findOne({ groupCode });
+        if (!group) return res.status(404).json({ error: 'Group not found' });
+
+        // เอา comment ออกจาก array ด้วย commentIndex
+        group.groupCase.caseIdeas[index].ideaComment.splice(commentIndex, 1);
+
+        await db.collection('groups').updateOne(
+            { groupCode },
+            { $set: { "groupCase.caseIdeas": group.groupCase.caseIdeas } }
+        );
+
+        res.json({ message: `Comment deleted successfully` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
+
+
+
+// start api
 const start = async () => {
     await client.connect();
     await initDB();
