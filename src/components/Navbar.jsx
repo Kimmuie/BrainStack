@@ -21,7 +21,7 @@ const Navbar = () => {
 
         {/* Right */}
         <div className="relative flex flex-row items-center justify-center gap-4 animate-fadeInUp">
-            {!isLogin ? (
+            {isLogin ? (
             <>
                 <h1 className="text-Primary text-base font-bold">Lorem Ipsum</h1>
                 <button
@@ -56,12 +56,12 @@ const Navbar = () => {
                 </div>
                 <div className="p-2">
                     {/* Name Changer - งานคิม */}
-                    <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-Secondary/10 transition-colors text-sm text-Secondary text-left">
+                    <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-Secondary/10 transition-colors text-sm text-Secondary text-left cursor-pointer">
                         <img src="/img/icon_edit_dark.svg" alt="Edit" className="w-4 h-4" />
                         Edit profile
                     </button>
                     {/* Brightness Adjustment - งานคิม */}
-                    <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-Secondary/10 transition-colors text-sm text-Secondary text-left">
+                    <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-Secondary/10 transition-colors text-sm text-Secondary text-left cursor-pointer">
                         <img src="/img/icon_moon_dark.svg" alt="Dark mode" className="w-4 h-4" />
                         Dark mode
                     </button>

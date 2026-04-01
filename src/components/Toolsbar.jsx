@@ -12,7 +12,10 @@ const Toolsbar = () => {
           <button className="font-bold ml-4 bg-Primary text-Secondary px-3 py-1 w-50 rounded-full border-2 border-Primary hover:bg-Darker-Primary cursor-pointer transition-colors duration-300">Join Group</button>
         </div>
         {/* Create Group - เพิ่ม Group เข้า Doc มั Field: ID, ชื่อ etc.*/}
-        <button className="w-50 font-bold ml-4 bg-Primary text-Secondary px-4 py-2 rounded-full border-2 border-Primary hover:bg-Secondary hover:text-Primary cursor-pointer ">Create Group</button>
+        <button className="w-50 font-bold ml-4 bg-Primary text-Secondary px-4 py-2 rounded-full border-2 border-Primary hover:bg-Darker-Primary hover:text-Secondary cursor-pointer transition-colors duration-300">Create Group</button>
+        <button className="font-bold ml-4 bg-Primary px-4 py-2 rounded-full border-2 border-Primary hover:Primary hover:bg-Darker-Primary cursor-pointer transition-colors duration-300">
+          <img src="/img/icon_filter_off_dark.svg" alt="Filter" className="w-10 h-10" />
+        </button>
       </div>
     </>
   );

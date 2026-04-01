@@ -26,7 +26,6 @@ const SignOut = ({ setUser }) => {
     <button
       onClick={handleSignout}
       className="flex flex-row items-center justify-center gap-2 text-custom-red bg-ellWhite border-2 hover:bg-custom-red  hover:text-Primary border-custom-red rounded-full py-2 text-lg font-semibold cursor-pointer">
-      <img src="./img/icon_google.svg" alt="google" className="w-10 p"/>
       Sign Out
     </button>
       {showAlert && (
