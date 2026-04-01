@@ -3,14 +3,17 @@ import { useState, useRef } from "react";
 import ClickOutside from "./ClickOutside";
 import SignIn from "./SignIn";
 import SignOut from "./SignOut";
+import { fetchAPI } from "../service/fetchapi"
 
 const Navbar = () => {
+    const email = localStorage.getItem('email');
+    const user = fetchAPI(`/users/${email}`, "GET")
     const userSettingRef = useRef(null);
     const [isLogin, setIsLogin] = useState(false);
     const [isUserOpen, setIsUserOpen] = useState(false);
     const [isEditProfile, setIsEditProfile] = useState(false);
-    const [isUsername, setIsUsername] = useState("Firstname Lastname");
-    const [isUserEmail, setIsUserEmail] = useState("example@example@gmail.com");
+    const [isUsername, setIsUsername] = useState(user.username);
+    const [isUserEmail, setIsUserEmail] = useState(email);
 
     return (
         <nav className="fixed z-50 bg-Secondary w-full h-20 flex items-center justify-between px-8 py-4 border-b-2 border-Primary">

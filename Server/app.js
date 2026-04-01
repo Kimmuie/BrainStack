@@ -169,6 +169,23 @@ app.delete('/Brainstack_test/users/:email', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+app.patch('/Brainstack_test/users/:email', async (req, res) => {
+    // UPDATE USERNAME
+    const { email } = req.params;
+
+    try {
+        const result = await db.collection('users').updateOne(
+            { email },
+            { $addToSet: { username: username } }
+        );
+
+        if(!result) return res.status(500).json({ error: 'User not found'});
+
+        res.json({ succes: true, message: `Change username to ${username}`});
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+})
 
 
 
@@ -203,6 +220,23 @@ app.get('/Brainstack_test/groups/:groupCode', async (req, res) => {
         const group = await db.collection('groups').findOne({ groupCode });
         if(!group) return res.status(404).json({ error: 'Group not found' });
         res.json(group);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+app.get('/Brainstack_test/users/:email/groups', async (req, res) => {
+    const { email } = req.params;
+    try {
+        // 1. ดึง user เพื่อเอา groupCode array
+        const user = await db.collection('users').findOne({ email });
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        // 2. ดึง groups ทั้งหมดที่ groupCode อยู่ใน array ของ user
+        const groups = await db.collection('groups')
+            .find({ groupCode: { $in: user.group } })
+            .toArray();
+
+        res.json(groups);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -339,6 +373,8 @@ app.delete('/Brainstack_test/groups/:groupCode/idea/:index/downvote', async (req
         res.status(500).json({ error: err.message });
     }
 });
+
+
 
 // Route for Comments
 app.post("/Brainstack_test/api/groups/:groupCode/idea/:index/comment", async (req, res) => {
