@@ -1,5 +1,5 @@
 import React from "react";
-import { auth, provider } from "./firebase";
+import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
 
 
@@ -15,7 +15,7 @@ const SignIn = ({ setUser }) => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, username, theme: "light" })
-        });
+        }); 
 
         localStorage.setItem("email", email);
         setUser(email);

@@ -118,7 +118,7 @@ const initDB = async () => {
 
 //Route for Users
 app.post('/Brainstack_test/users', async (req, res) => {
-    const { email, username, theme} = req.body;
+    const { email, username, theme } = req.body;
 
     try {
         await db.collection('users').insertOne({

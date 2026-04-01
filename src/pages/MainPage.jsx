@@ -22,7 +22,7 @@ const MainPage = () => {
             <Display />
             <Toolsbar />
           < div className="grid grid-cols-5 gap-2 max-w-5xl pt-3">
-              {groupExample.map((item) => (
+              {groupExample.map((item) => ( 
                   <GroupBox/>
               ))}
             </div>
