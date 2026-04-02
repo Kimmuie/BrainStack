@@ -151,7 +151,7 @@ app.post('/Brainstack_test/users/:email/tag', async (req, res) => {
             { email },
             { $addToSet: { tag: { tagName, tagGroup: tagGroup || [] } } }
         );
-        res.json({ succes: true });
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -169,25 +169,27 @@ app.delete('/Brainstack_test/users/:email', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 app.patch('/Brainstack_test/users/:email', async (req, res) => {
-    // UPDATE USERNAME
     const { email } = req.params;
-    const { username } = req.body;
+    const { email: _, group, tag, ...safeUpdates } = req.body; // กัน field ออก
 
     try {
-        const result = await db.collection('users').updateOne(
+        const result = await db.collection('users').findOneAndUpdate(
             { email },
-            { $set: { username: username } },
+            { $set: safeUpdates },
             { returnDocument: 'after' }
         );
 
-        if(!result) return res.status(500).json({ error: 'User not found'});
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
-        res.json({ succes: true, message: `Change username to ${username}`});
+        res.json({ success: true, user: result });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-})
+});
 
 
 
@@ -210,7 +212,7 @@ app.post('/Brainstack_test/groups', async (req, res) => {
             { email: creatorEmail },
             { $addToSet: { group: groupCode} }
         );
-        res.json({ succes: true, groupCode});
+        res.json({ success: true, groupCode});
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
