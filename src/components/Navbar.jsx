@@ -1,5 +1,5 @@
 // Navbar.jsx
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ClickOutside from "./ClickOutside";
 import SignIn from "./SignIn";
 import SignOut from "./SignOut";
@@ -7,13 +7,40 @@ import { fetchAPI } from "../service/fetchapi"
 
 const Navbar = () => {
     const email = localStorage.getItem('email');
-    const user = fetchAPI(`/users/${email}`, "GET")
+    const [user, setUser] = useState(null);
     const userSettingRef = useRef(null);
     const [isLogin, setIsLogin] = useState(false);
     const [isUserOpen, setIsUserOpen] = useState(false);
     const [isEditProfile, setIsEditProfile] = useState(false);
-    const [isUsername, setIsUsername] = useState(user.username);
-    const [isUserEmail, setIsUserEmail] = useState(email);
+    const [editUsername, setEditUsername] = useState(null);
+    const [isSaving, setIsSaving] = useState(false);
+
+    // โหลดข้อมูลผู้ใช้เข้า เวลาล็อคอิน, กดเซฟไรงี้
+    useEffect(() => {
+        if (!email) return;
+        const loadUser = async () => {
+            const data = await fetchAPI(`/users/${email}`, "GET");
+            if (data) {
+                setUser(data);
+                setEditUsername(data.username || '');
+                setIsLogin(true);
+            }
+        };
+        loadUser();
+    }, [email, isSaving]);
+
+    // ฟังก์ชันเซฟชื่อผู้ใช้ใหม่
+    const handleSaveUsername = async () => {
+        if (!editUsername.trim() || editUsername === user?.username) 
+            setIsEditProfile(false);
+        setIsSaving(true);
+        const updated = await fetchAPI(`/users/${email}`, "PATCH", { username: editUsername });
+        if (updated) {
+            setUser(updated);
+            setIsEditProfile(false)
+        }
+        setIsSaving(false);
+    };
 
     return (
         <nav className="fixed z-50 bg-Secondary w-full h-20 flex items-center justify-between px-8 py-4 border-b-2 border-Primary">
@@ -29,7 +56,7 @@ const Navbar = () => {
         <div className="relative flex flex-row items-center justify-center gap-4 animate-fadeInUp">
             {isLogin ? (
             <>
-                <h1 className="text-Primary text-base font-bold">Lorem Ipsum</h1>
+                <h1 className="text-Primary text-base font-bold">{user.username ? (user.username) : ("None")}</h1>
                 <button
                 ref={userSettingRef}
                 onClick={() => setIsUserOpen((prev) => !prev)}
@@ -56,17 +83,26 @@ const Navbar = () => {
             >
                 <div className="flex items-center just gap-3 p-4 border-b border-Primary/20">
                     <div className="overflow-hidden">
-                        {isEditProfile ? (
-                        <p className="text-Secondary text-sm font-bold truncate">Lorem Ipsum</p>
+                        {!isEditProfile ? (
+                        <p className="text-Secondary text-sm font-bold truncate">{user.username ? (user.username) : ("None")}</p>
                         ) : (
                         <div className="flex flex-row w-full rounded-full border-2 bg-Darker-Secondary border-Primary py-1 px-1">
-                            <input type="text" placeholder="Username" className="text-Primary w-full px-2 focus:outline-none focus:ring-0 focus:border-transparent" />
-                            <button className="font-bold ml-4 bg-Primary text-Secondary px-3 py-1 rounded-full border-2 border-Primary hover:bg-Darker-Primary cursor-pointer transition-colors duration-300">
+                            <input 
+                                type="text" 
+                                placeholder="Username" 
+                                value={editUsername}
+                                onChange={(e) => setEditUsername(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && handleSaveUsername()}
+                                className="text-Primary w-full px-2 focus:outline-none focus:ring-0 focus:border-transparent" />
+                            <button 
+                                onClick={handleSaveUsername}
+                                disabled={isSaving || !editUsername.trim()}
+                                className="font-bold ml-4 bg-Primary text-Secondary px-3 py-1 rounded-full border-2 border-Primary hover:bg-Darker-Primary cursor-pointer transition-colors duration-300">
                                 <img src="/img/icon_check_dark.svg" alt="Dark mode" className="w-6 h-6" />
                             </button>
                         </div>
                         )}
-                        <p className="text-Secondary/60 text-xs truncate">lorem@example.com</p>
+                        <p className="text-Secondary/60 text-xs truncate">{user.email}</p>
                     </div>
                 </div>
                 <div className="p-2">

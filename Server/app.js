@@ -172,11 +172,13 @@ app.delete('/Brainstack_test/users/:email', async (req, res) => {
 app.patch('/Brainstack_test/users/:email', async (req, res) => {
     // UPDATE USERNAME
     const { email } = req.params;
+    const { username } = req.body;
 
     try {
         const result = await db.collection('users').updateOne(
             { email },
-            { $addToSet: { username: username } }
+            { $set: { username: username } },
+            { returnDocument: 'after' }
         );
 
         if(!result) return res.status(500).json({ error: 'User not found'});
