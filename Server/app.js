@@ -19,7 +19,7 @@ app.use(cors({
 
 app.use(express.json());
 
-const uri = `mongodb://server:NlgR0QILM1SXrTxx@ac-15m8wyc-shard-00-00.ie4fwjo.mongodb.net:27017,ac-15m8wyc-shard-00-01.ie4fwjo.mongodb.net:27017,ac-15m8wyc-shard-00-02.ie4fwjo.mongodb.net:27017/?ssl=true&replicaSet=atlas-13rdvl-shard-0&authSource=admin&appName=cluster4Educator`;
+const uri = MONGO_URL;
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
