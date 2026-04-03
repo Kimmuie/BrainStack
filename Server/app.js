@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const {MongoClient, ObjectId, ServerApiVersion } = require('mongodb');
 const crypto = require('crypto');
-const { Await } = require('react-router-dom');
 require('dotenv').config({ path: '../.env' });
 
 const app = express();
@@ -252,7 +251,6 @@ app.get('/Brainstack_test/users/:email/groups', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.post('/Brainstack_test/groups/:groupCode/join', async (req, res) => {
 app.post('/Brainstack/groups/:groupCode/join', async (req, res) => {
     const { groupCode } = req.params;
     const { email } = req.body;
@@ -320,7 +318,7 @@ app.post("/Brainstack/groups/:groupCode/idea/:index/downvote", async (req, res) 
     const { groupCode, index } = req.params;
 
     try {
-        await db.collection('gruops').updateOne(
+        await db.collection('groups').updateOne(
             { groupCode },
             { $inc: { [`groupCase.caseIdeas.${index}.ideaDownvote`]: 1}}
         );
@@ -337,7 +335,7 @@ app.post("/Brainstack/groups/:groupCode/idea/:index/upvote", async (req, res) =>
             { groupCode },
             { $inc: { [`groupCase.caseIdeas.${index}.ideaUpvote`]: 1}}
         );
-        res.json(ideas);
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -449,4 +447,5 @@ const start = async () => {
     await initDB();
     app.listen(3000, () => console.log("Server running on port 3000"));
 };
+
 start();
