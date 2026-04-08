@@ -13,9 +13,10 @@ html { scroll-behavior: smooth;}
 
 body {
   background-color: var(--color-Secondary);
-  background-image: url("/img/brain_pattern.jpg");
+  background-image: url("/img/brain_pattern.png");
   background-repeat: repeat;
-  background-blend-mode: multiply;
+  /* background-blend-mode:exclusion; */
+  /* background-blend-mode: screen; */
   background-size: 500px 500px;
 }
 
@@ -24,7 +25,6 @@ body {
   --color-Primary: #D2AB61;
   --color-Darker-Primary: #c09957;
   --color-Secondary: #313647;
-  /* FAF8F1 Bright Theme */
   --color-Darker-Secondary: #2c303f;
   --color-Tertiary: #FAF8F1;
   --color-custom-red: #DC0E0E;

@@ -11,6 +11,19 @@ const SignIn = ({ setUser }) => {
         const email = data.user.email;
         const username = data.user.displayName;
 
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+        await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, username, theme: "light" })
+        }); 
+
+        localStorage.setItem("email", email);
+        setUser(email);
+=======
+=======
+>>>>>>> main
         const existingUser = await fetchAPI(`/users/${email}`, "GET");
         
         if(existingUser) {
@@ -20,10 +33,18 @@ const SignIn = ({ setUser }) => {
             const newUser = await fetchAPI('/users', "POST", { email, username, theme: "dark" });
             if (newUser) {
                 localStorage.setItem('email', email);
+<<<<<<< HEAD
+                setUser(email);
+=======
+>>>>>>> main
                 console.log("Log In Success");
             }
         }
         
+<<<<<<< HEAD
+>>>>>>> Stashed changes
+=======
+>>>>>>> main
         console.log("Log In Success");
         } catch (err) {
         console.error("Login error:", err.message);
