@@ -8,7 +8,7 @@ require('dotenv').config({ path: '../.env' });
 const app = express();
 
 const API_KEY = process.env.API_KEY
-const MONGO_URL = process.env.MONGODB_URL
+const MONGO_URL = process.env.VITE_MONGODB_URL
 
 app.use(cors({
     origin: '*',

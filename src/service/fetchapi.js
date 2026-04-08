@@ -1,8 +1,7 @@
 export const fetchAPI = async (endpoint, method = 'GET', body = null) => {
-    const api_key = import.meta.env.API_KEY;
-    const base_url = `http://localhost:3000/Brainstack_test`;
+    const base_url = `http://localhost:3000/Brainstack`;
 
-    try {
+    try {   
         const options = {
             method,
             headers: {
@@ -22,3 +21,4 @@ export const fetchAPI = async (endpoint, method = 'GET', body = null) => {
         alert('❌ เชื่อมต่อ server ไม่ได้: ' + error.message);
     }
 };
+
