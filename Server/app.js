@@ -176,7 +176,7 @@ app.delete('/Brainstack/users/:email', async (req, res) => {
     }
 });
 
-app.patch('/Brainstack_test/users/:email', async (req, res) => {
+app.patch('/Brainstack/users/:email', async (req, res) => {
     const { email } = req.params;
     const { email: _, group, tag, ...safeUpdates } = req.body; // กัน field ออก
 
@@ -234,7 +234,7 @@ app.get('/Brainstack/groups/:groupCode', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.get('/Brainstack_test/users/:email/groups', async (req, res) => {
+app.get('/Brainstack/users/:email/groups', async (req, res) => {
     const { email } = req.params;
     try {
         // 1. ดึง user เพื่อเอา groupCode array

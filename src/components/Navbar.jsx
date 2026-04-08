@@ -1,11 +1,14 @@
 // Navbar.jsx
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import ClickOutside from "./ClickOutside";
 import SignIn from "./SignIn";
 import SignOut from "./SignOut";
 import { fetchAPI } from "../service/fetchapi"
+import { useLocation } from "react-router-dom";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Navbar = () => {
+    const location = useLocation();
     const email = localStorage.getItem('email');
     const [user, setUser] = useState(null);
     const userSettingRef = useRef(null);
@@ -14,6 +17,7 @@ const Navbar = () => {
     const [isEditProfile, setIsEditProfile] = useState(false);
     const [editUsername, setEditUsername] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
+    const { changeTheme, theme } = useTheme();  
 
     // โหลดข้อมูลผู้ใช้เข้า เวลาล็อคอิน, กดเซฟไรงี้
     useEffect(() => {
@@ -31,15 +35,36 @@ const Navbar = () => {
 
     // ฟังก์ชันเซฟชื่อผู้ใช้ใหม่
     const handleSaveUsername = async () => {
-        if (!editUsername.trim() || editUsername === user?.username) 
+        if (!editUsername.trim() || editUsername === user?.username) {
             setIsEditProfile(false);
+            return;
+        }
         setIsSaving(true);
-        const updated = await fetchAPI(`/users/${email}`, "PATCH", { username: editUsername });
-        if (updated) {
-            setUser(updated);
-            setIsEditProfile(false)
+        
+         try {
+            const updated = await fetchAPI(`/users/${email}`, "PATCH", { username: editUsername });
+            if (updated) {
+                setUser(updated);
+                setIsEditProfile(false)
+            }
+        } catch (err) {
+            console.error("Update failed:", err);
         }
         setIsSaving(false);
+    };
+
+    const handleChangeTheme = async () => {
+        const newTheme = theme === "dark" ? "light" : "dark";
+        changeTheme(newTheme);
+        try {
+            const updated = await fetchAPI(`/users/${email}`, "PATCH", { theme: newTheme });
+            if (updated) {
+                setUser(prev => ({ ...prev, ...updated }));
+            }
+        } catch (err) {
+            console.error("Theme update failed:", err);
+            changeTheme(user.theme);
+        }
     };
 
     return (
@@ -114,7 +139,9 @@ const Navbar = () => {
                         Edit profile
                     </button>
                     {/* Brightness Adjustment - งานคิม */}
-                    <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-Secondary/10 transition-colors text-sm text-Secondary text-left cursor-pointer">
+                    <button 
+                        onClick={handleChangeTheme}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-Secondary/10 transition-colors text-sm text-Secondary text-left cursor-pointer">
                         <img src="/img/icon_moon_dark.svg" alt="Dark mode" className="w-4 h-4" />
                         Dark mode
                     </button>

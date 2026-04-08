@@ -14,14 +14,13 @@ const SignIn = ({ setUser }) => {
         
         if(existingUser) {
             localStorage.setItem("email", email);
-            setUser(email);
         } else{
             const newUser = await fetchAPI('/users', "POST", { email, username, theme: "dark" });
             if (newUser) {
                 localStorage.setItem('email', email);
-                console.log("Log In Success");
             }
         }
+        setUser(email);
         
         console.log("Log In Success");
         } catch (err) {

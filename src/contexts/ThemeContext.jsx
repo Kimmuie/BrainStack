@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, useCallback } from "react";
 import { fetchAPI } from "../service/fetchapi"
 
 const themes = {
@@ -44,22 +44,23 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const email = localStorage.getItem('email');
+  const [email, setEmail] = useState(() => localStorage.getItem('email'))
   const [theme, setTheme] = useState("dark");
   const [icons, setIcons] = useState(themeIcons.dark);
 
   // โหลดข้อมูลผู้ใช้เข้า เวลาล็อคอิน, กดเซฟไรงี้
   useEffect(() => {
-        if (!email) return;
-        const loadUser = async () => {
-            const data = await fetchAPI(`/users/${email}`, "GET");
-            if (data) {
-                setTheme(data.theme || 'dark')
-              applyTheme(theme);;
-            }
-        };
-        loadUser();
-    }, [email]);
+      if (!email) return;
+      const loadUser = async () => {
+          const data = await fetchAPI(`/users/${email}`, "GET");
+          if (data) {
+              const newTheme = data.theme || 'dark';
+              setTheme(newTheme);
+              applyTheme(newTheme);
+          }
+      };
+      loadUser();
+  }, [email]);
 
 const applyTheme = (themeName) => {
   const selectedTheme = themes[themeName] || themes.light;
@@ -69,13 +70,13 @@ const applyTheme = (themeName) => {
 };
 
   // Function to change theme that can be called from anywhere in the app
-  const changeTheme = (newTheme) => {
-    if (themes[newTheme]) {
-      setTheme(newTheme);
-      setIcons(themeIcons[newTheme] || themeIcons.dark);
-      applyTheme(newTheme);
-    }
-  };
+  const changeTheme = useCallback((newTheme) => {
+      if (themes[newTheme]) {
+          setTheme(newTheme);
+          setIcons(themeIcons[newTheme] || themeIcons.dark);
+          applyTheme(newTheme);
+      }
+  }, []);
 
   // Apply theme on initial load and when theme changes
   useEffect(() => {
