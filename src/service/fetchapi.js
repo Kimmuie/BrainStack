@@ -4,6 +4,7 @@ export const fetchAPI = async (endpoint, method = 'GET', body = null) => {
     const base_url = `http://localhost:3000/Brainstack`;
 
     try {
+    try {   
         const options = {
             method,
             headers: {
@@ -24,4 +25,4 @@ export const fetchAPI = async (endpoint, method = 'GET', body = null) => {
         //ลบออกหลังทำเสร็จ
         // alert('❌ เชื่อมต่อ server ไม่ได้: ' + error.message);
     }
-};
+};};
