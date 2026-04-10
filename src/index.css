@@ -28,12 +28,29 @@ body {
   --color-Darker-Secondary: #2c303f;
   --color-Tertiary: #FAF8F1;
   --color-custom-red: #DC0E0E;
+  --color-custom-green: #0DCB0D;
 
   --animate-fadeInUp: fadeInUp 0.5s ease-in-out;
   @keyframes fadeInUp {
     0% {
       opacity: 0;
       transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+    --animate-popUp: popUp 0.5s ease-in-out;
+  @keyframes popUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(-10px);
     }
     100% {
       opacity: 1;

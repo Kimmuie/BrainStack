@@ -4,6 +4,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Navbar from './components/Navbar';
 import NotFound from "./pages/Error";
 import MainPage from "./pages/MainPage";
+import GroupPage from "./pages/GroupPage";
 
 function App() {
 
@@ -15,6 +16,8 @@ function App() {
         <div className="h-20" />
         <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/home" element={<MainPage />} />
+          <Route path="/group/:groupPath" element={<GroupPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router> 

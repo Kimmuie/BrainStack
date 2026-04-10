@@ -1,22 +1,100 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import CreateGroup from "./CreateGroup";
+import { fetchAPI } from "../service/fetchapi";
+import { useTheme } from "../contexts/ThemeContext";
 
-const Toolsbar = () => {
+const Toolsbar = ({ onGroupCreated }) => {
+  const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+  const [enteredCode, setEnteredCode] = useState("");
+  const email = localStorage.getItem('email');
+  const [user, setUser] = useState(null);
+  const { changeTheme, theme, icons } = useTheme();
 
+  const iconFilterOff = icons.filterOff;
+  const iconFilterOn = icons.filterOn;
+
+  useEffect(() => {
+    if (!email) return;
+    const loadUser = async () => {
+      const data = await fetchAPI(`/users/${email}`, "GET");
+      if (data) setUser(data);
+    };
+    loadUser();
+  }, [email]);
+
+  const handleJoinGroup = async () => {
+    if (!enteredCode.trim()) return;
+
+    try {
+      const result = await fetchAPI(`/groups/${enteredCode}/join`, "POST", {
+        email: user.email,
+      });
+
+      if (result?.success) {
+        console.log("Joined group successfully:", enteredCode);
+        setEnteredCode("");
+        onGroupCreated();
+      } else {
+        console.warn("Failed to join group.");
+      }
+
+    } catch (err) {
+      console.error("Join Group error:", err.message);
+    }
+  };
+
+
+  const handleCreateGroup = async ({ groupName, groupDescription }) => {
+    try {
+      const newGroup = await fetchAPI('/groups', "POST", {
+        groupName,
+        groupDescription,
+        creatorEmail: user.email,
+      });
+      console.log("Create Group Success", newGroup);
+      setIsCreatingGroup(false);
+      onGroupCreated();
+    } catch (err) {
+      console.error("Create Group error:", err.message);
+    }
+  };
 
   return (
     <>
       <div className="flex flex-row w-full px-8 pt-7 animate-fadeInUp">
-        {/* Search Bar - หลังกด join Group จะ Fetch หาด้วยรหัสที่ Input ไปว่ามีกลุ่มไหนตรงกันไหม หากมีให้เพิ่ม Group -> User/Groups */}
         <div className="flex flex-row w-full rounded-full border-2 border-Primary py-2 px-2">
-          <input type="text" placeholder="Add Group with Code" className="text-Primary w-full px-4 focus:outline-none focus:ring-0 focus:border-transparent" />
-          <button className="font-bold ml-4 bg-Primary text-Secondary px-3 py-1 w-50 rounded-full border-2 border-Primary hover:bg-Darker-Primary cursor-pointer transition-colors duration-300">Join Group</button>
+          <input
+            type="text"
+            placeholder="Add Group with Code"
+            value={enteredCode}
+            onChange={(e) => setEnteredCode(e.target.value)}
+            className="text-Primary w-full px-4 focus:outline-none focus:ring-0 focus:border-transparent"
+          />
+          <button
+            onClick={handleJoinGroup}
+            className="font-bold ml-4 bg-Primary text-Secondary px-3 py-1 w-50 rounded-full border-2 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors"
+          >
+            Join Group
+          </button>
         </div>
-        {/* Create Group - เพิ่ม Group เข้า Doc มั Field: ID, ชื่อ etc.*/}
-        <button className="w-50 font-bold ml-4 bg-Primary text-Secondary px-4 py-2 rounded-full border-2 border-Primary hover:bg-Darker-Primary hover:text-Secondary cursor-pointer transition-colors duration-300">Create Group</button>
-        <button className="font-bold ml-4 bg-Primary px-4 py-2 rounded-full border-2 border-Primary hover:Primary hover:bg-Darker-Primary cursor-pointer transition-colors duration-300">
-          <img src="/img/icon_filter_off_dark.svg" alt="Filter" className="w-10 h-10" />
+        <button
+          onClick={() => setIsCreatingGroup(true)}
+          className="w-50 font-bold ml-4 bg-Primary text-Secondary px-4 py-2 rounded-full border-2 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors"
+        >
+          Create Group
+        </button>
+        <button className="font-bold ml-4 bg-Primary px-4 py-2 rounded-full border-2 border-Primary hover:Primary hover:bg-Darker-Primary cursor-pointer transition-colors">
+          <img src={iconFilterOff} alt="Filter" className="w-10 h-10" />
         </button>
       </div>
+      {isCreatingGroup && (
+        <CreateGroup
+          onConfirm={handleCreateGroup}
+          onCancel={() => setIsCreatingGroup(false)}
+          groupName={""}
+          groupDescription={""}
+        />
+      )}
     </>
   );
 };

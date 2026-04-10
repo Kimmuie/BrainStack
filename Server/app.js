@@ -201,15 +201,18 @@ app.patch('/Brainstack/users/:email', async (req, res) => {
 
 //Route for Group
 app.post('/Brainstack/groups', async (req, res) => {
-    const { groupName, creatorEmail } = req.body;
+    const { groupName, groupDescription, creatorEmail } = req.body;
 
     try {
+        // const groupPath = crypto.randomBytes(8).toString("hex");
         const groupCode = crypto.randomBytes(3).toString('hex');
 
         await db.collection('groups').insertOne(
             {
+                // groupPath,
                 groupCode,
                 groupName,
+                groupDescription,
                 groupData: { groupUsers: [creatorEmail] },
                 groupCase: { caseName: "", caseIdeas: [] }
             });
