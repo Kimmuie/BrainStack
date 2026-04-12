@@ -24,20 +24,24 @@ const themes = {
 
 const themeIcons = {
   light: {
-    user: "./img/icon_user_light.svg",
-    edit: "./img/icon_edit_light.svg",
+    user: "/img/icon_user_light.svg",
+    edit: "/img/icon_edit_light.svg",
     theme: "/img/icon_sun_light.svg",
-    check: "./img/icon_check_light.svg",
-    filterOff: "./img/icon_filter_off_light.svg",
-    filterOn: "./img/icon_filter_on_light.svg",
+    check: "/img/icon_check_light.svg",
+    filterOff: "/img/icon_filter_off_light.svg",
+    filterOn: "/img/icon_filter_on_light.svg",
+    add: "/img/icon_add_light.svg",
+    vote: "/img/icon_vote_light.svg",
   },
   dark: {
-    user: "./img/icon_user_dark.svg",
-    edit: "./img/icon_edit_dark.svg",
-    theme: "./img/icon_moon_dark.svg",
-    check: "./img/icon_check_dark.svg",
-    filterOff: "./img/icon_filter_off_dark.svg",
-    filterOn: "./img/icon_filter_on_dark.svg",
+    user: "/img/icon_user_dark.svg",
+    edit: "/img/icon_edit_dark.svg",
+    theme: "/img/icon_moon_dark.svg",
+    check: "/img/icon_check_dark.svg",
+    filterOff: "/img/icon_filter_off_dark.svg",
+    filterOn: "/img/icon_filter_on_dark.svg",
+    add: "/img/icon_add_dark.svg",
+    vote: "/img/icon_vote_dark.svg",
   },
 };
 

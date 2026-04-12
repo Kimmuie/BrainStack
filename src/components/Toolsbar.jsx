@@ -31,7 +31,6 @@ const Toolsbar = ({ onGroupCreated }) => {
       });
 
       if (result?.success) {
-        console.log("Joined group successfully:", enteredCode);
         setEnteredCode("");
         onGroupCreated();
       } else {
@@ -89,6 +88,7 @@ const Toolsbar = ({ onGroupCreated }) => {
       </div>
       {isCreatingGroup && (
         <CreateGroup
+          Header={"Create Group"}
           onConfirm={handleCreateGroup}
           onCancel={() => setIsCreatingGroup(false)}
           groupName={""}

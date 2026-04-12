@@ -81,25 +81,30 @@ const initDB = async () => {
                             }
                         },
                         groupCase: {
-                            bsonType: "object",
-                            properties: {
-                                caseName: { bsonType: "string" },
-                                caseIdeas: {
-                                    bsonType: "array",
-                                    items: {
-                                        bsonType: "object",
-                                        properties: {
-                                            ideaDescription: { bsonType: "string" },
-                                            ideaCreateBy:    { bsonType: "string" },
-                                            ideaUpvote:      { bsonType: "int" },
-                                            ideaDownvote:    { bsonType: "int" },
-                                            ideaComment: {
-                                                bsonType: "array",
-                                                items: {
-                                                    bsonType: "object",
-                                                    properties: {
-                                                        commentData: { bsonType: "string" },
-                                                        commentUser: { bsonType: "string" }
+                            bsonType: "array",
+                            items: {
+                                bsonType: "object",
+                                    properties: {
+                                    caseName: { bsonType: "string" },
+                                    caseDescription: { bsonType: "string" },
+                                    caseCode: { bsonType: "string" },
+                                    caseIdeas: {
+                                        bsonType: "array",
+                                        items: {
+                                            bsonType: "object",
+                                            properties: {
+                                                ideaDescription: { bsonType: "string" },
+                                                ideaCreateBy:    { bsonType: "string" },
+                                                ideaUpvote:      { bsonType: "int" },
+                                                ideaDownvote:    { bsonType: "int" },
+                                                ideaComment: {
+                                                    bsonType: "array",
+                                                    items: {
+                                                        bsonType: "object",
+                                                        properties: {
+                                                            commentData: { bsonType: "string" },
+                                                            commentUser: { bsonType: "string" }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -214,7 +219,7 @@ app.post('/Brainstack/groups', async (req, res) => {
                 groupName,
                 groupDescription,
                 groupData: { groupUsers: [creatorEmail] },
-                groupCase: { caseName: "", caseIdeas: [] }
+                groupCase: { caseName: "", caseDescription: "", caseIdeas: [] }
             });
         
         await db.collection('users').updateOne(
@@ -295,6 +300,23 @@ app.delete('/Brainstack/groups/:groupCode', async (req, res) => {
 });
 
 
+//Route for Case
+app.post('/Brainstack/groups/:groupCode/groupCase', async (req, res) => {
+    const { caseName, caseDescription } = req.body;
+
+    try {
+        const caseCode = crypto.randomBytes(6).toString('hex');
+
+        await db.collection('groups').updateOne(
+            { groupCode: req.params.groupCode },
+            { $push: { groupCase: { caseName, caseDescription, caseCode } } }
+        );
+        
+        res.json({ success: true, caseCode});
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 //Route for Idea
 app.post("/Brainstack/groups/:groupCode/idea", async (req, res) => {
