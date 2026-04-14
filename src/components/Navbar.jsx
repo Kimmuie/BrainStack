@@ -6,7 +6,6 @@ import SignOut from "./SignOut";
 import { fetchAPI } from "../service/fetchapi"
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
-import Dropdown from "./Dropdown";
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -24,8 +23,6 @@ const Navbar = () => {
     const [editUsername, setEditUsername] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
     const [userGroups, setUserGroups] = useState([]);
-    const groupSelectionRef = useRef(null);
-    const [isGroupDropdownOpen, setIsGroupDropdownOpen] = useState(false);
     const { changeTheme, theme, icons } = useTheme();  
 
     // ฟังก์ชันแก้ไขเส้นทางไอคอน
@@ -96,6 +93,14 @@ const Navbar = () => {
 
     return (
         <nav className="fixed z-50 bg-Secondary w-full h-20 flex items-center justify-between px-8 py-4 border-b-2 border-Primary">
+        {isGroupPage &&
+        <button
+          onClick={() => navigate("/home")}
+          className="inset-0 -z-10 absolute whitespace-nowrap justify-center items-center flex font-bold text-Primary hover:text-Darker-Primary hover:underline rounded-full cursor-pointer transition-colors"
+        >
+          Back
+        </button>
+        }
         {/* Left */}
         <ul className="items-center flex space-x-6 animate-fadeInUp">
             <button onClick={() => navigate("/home")} className="flex flex-row items-center gap-2 cursor-pointer">
@@ -103,36 +108,9 @@ const Navbar = () => {
                 <li className="text-Primary text-2xl font-bold">BrainStack</li>
             </button>
             <button 
-                    ref={groupSelectionRef}
-                onClick={() => setIsGroupDropdownOpen(prev => !prev)}
                 className="text-Secondary bg-Primary text-base font-bold border-2 px-3 py-1 rounded-full cursor-pointer">
             {isGroupPage && groupName ? groupName : "All Group"}
             </button>
-            {/* Dropdown */}
-            {isGroupDropdownOpen && (
-                <ClickOutside 
-                    onOutsideClick={() => setIsGroupDropdownOpen(false)}
-                    ignoreRefs={[groupSelectionRef]}
-                    className="absolute top-15 left-50 min-w-48 bg-Secondary border border-Primary/30 rounded-xl shadow-sm z-50 overflow-hidden">
-                    <div className="py-1.5">
-                        <p className="text-xs text-Primary/50 px-3 py-1">YOUR GROUPS</p>
-                        <button
-                            onClick={() => { navigate("/home"); setIsGroupDropdownOpen(false); }}
-                            className="flex items-center gap-2.5 w-full px-3 py-2 hover:bg-Primary/10 text-sm text-Primary transition-colors cursor-pointer"
-                        >
-                            <span className="w-7 h-7 rounded-md bg-Primary/20 flex items-center justify-center text-xs font-medium text-Primary flex-shrink-0">☰</span>
-                            All Group
-                        </button>
-                        {userGroups.map((groupCode) => (
-                            <Dropdown
-                                key={groupCode}
-                                groupCode={groupCode}
-                                onSelect={() => setIsGroupDropdownOpen(false)}
-                            />
-                        ))}
-                    </div>
-                </ClickOutside>
-            )}
         </ul>
 
         {/* Right */}

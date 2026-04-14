@@ -22,7 +22,7 @@ const GroupPage = () => {
       <div className="h-full w-full flex flex-col items-center justify-center relative overflow-hidden">
           <section className="w-6xl bg-Secondary flex flex-col items-center min-h-screen px-8 pb-8">
             <SolutionBar onSolutionCreated={() => setRefresh(prev => !prev)}/>
-            <SolutionBox />
+            <SolutionBox refresh={refresh} />
           </section>
       </div>
     </>

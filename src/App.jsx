@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import NotFound from "./pages/Error";
 import MainPage from "./pages/MainPage";
 import GroupPage from "./pages/GroupPage";
+import License from "./components/License";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/group/:groupPath" element={<GroupPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <License />
       </Router> 
     </ThemeProvider>
     </>

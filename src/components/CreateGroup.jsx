@@ -8,14 +8,14 @@ const CreateGroup = ({ onConfirm, onCancel, Header }) => {
 
    const handleConfirm = () => {
     if (!editGroupName.trim()) return;
-    onConfirm({ groupName: editGroupName, groupDescription: editGroupDescription });
+    onConfirm({ createName: editGroupName, createDescription: editGroupDescription });
   };
 
   return (
-    <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 z-90 animate-popUp">
+    <div className="fixed inset-0 bg-transparent backdrop-blur-xs flex items-center justify-center p-4 z-90 animate-popUp">
       <ClickOutside className="border-2 border-Primary bg-Darker-Primary rounded-xl shadow-lg max-w-sm w-full flex flex-col h-fit" onOutsideClick={onCancel}>
         <div className="flex flex-row justify-start items-center h-full mt-3 ml-3">
-          <img src={Header == "Create Group" ? "/img/icon_member_gold.svg" : "/img/icon_idea_gold.svg"} width="40" height="40" alt="alert" className="bg-Secondary p-2 rounded-full"/>
+          <img src={Header == "Create Group" ? "/img/icon_member_gold.svg" : "/img/icon_case_gold.svg"} width="40" height="40" alt="alert" className="bg-Secondary p-2 rounded-full"/>
           <h3 className="text-lg font-prompt font-semibold text-Secondary ml-4">{Header}</h3>
         </div>
         <div className="p-4 gap-4 flex flex-col">

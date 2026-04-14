@@ -43,11 +43,15 @@ const Toolsbar = ({ onGroupCreated }) => {
   };
 
 
-  const handleCreateGroup = async ({ groupName, groupDescription }) => {
+  const handleCreateGroup = async ({ createName, createDescription }) => {
+    if (!user?.email) { 
+        console.error("User not loaded yet");
+        return;
+    }
     try {
       const newGroup = await fetchAPI('/groups', "POST", {
-        groupName,
-        groupDescription,
+        groupName: createName,
+        groupDescription: createDescription,
         creatorEmail: user.email,
       });
       console.log("Create Group Success", newGroup);

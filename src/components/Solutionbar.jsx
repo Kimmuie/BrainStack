@@ -25,12 +25,12 @@ const SolutionBar = ({ onSolutionCreated }) => {
   }, [email]);
 
 
-  const handleCreateSolution = async ({ caseName, caseDescription }) => {
+  const handleCreateSolution = async ({ createName, createDescription }) => {
     try {
       console.log("groupPath:", groupPath);
       const newSolution = await fetchAPI(`/groups/${groupPath}/groupCase`, "POST", {
-        caseName,
-        caseDescription,
+        caseName: createName,
+        caseDescription: createDescription
       });
       console.log("Create Solution Success", newSolution);
       setIsCreatingCase(false);
@@ -42,7 +42,7 @@ const SolutionBar = ({ onSolutionCreated }) => {
 
   return (
     <>
-      <div className="flex flex-row w-full px-8 pt-7 animate-fadeInUp">
+      <div className="flex flex-row w-full px-8 pt-7 gap-4  animate-fadeInUp">
         <input
           type="text"
           placeholder="Search Solution"
@@ -52,7 +52,7 @@ const SolutionBar = ({ onSolutionCreated }) => {
         />
         <button
           onClick={() => setIsCreatingCase(true)}
-          className="w-50 font-bold ml-4 bg-Primary text-Secondary px-4 py-2 rounded-full border-2 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors"
+          className="w-50 font-bold bg-Primary text-Secondary px-4 py-2 rounded-full border-2 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors"
         >
           Create Solution
         </button>

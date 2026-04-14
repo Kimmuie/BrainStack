@@ -2,19 +2,25 @@ import { useState, useEffect } from "react";
 import { fetchAPI } from "../service/fetchapi";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
+import { useLocation } from "react-router-dom";
+import CreateIdea from "./CreateIdea";
 
 const SolutionBox = ({ refresh }) => {
+  const location = useLocation();
+  const pathParts = location.pathname.split('/');
+  const isGroupPage = pathParts[1] === 'group';
+  const groupPath = isGroupPage ? pathParts[2] : null;
   const email = localStorage.getItem("email");
-  const [groups, setGroups] = useState([]);
+  const [groupCases, setGroupCases] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+    useEffect(() => {
     if (!email) return;
 
     const loadGroups = async () => {
       setLoading(true);
-      const data = await fetchAPI(`/users/${email}/groups`, "GET");
-      if (data) setGroups(data);
+      const data = await fetchAPI(`/groups/${groupPath}`, "GET");
+      if (data) setGroupCases(data.groupCase ?? []);
       setLoading(false);
     };
 
@@ -26,7 +32,7 @@ const SolutionBox = ({ refresh }) => {
     return (
       <>
       <div className="grid grid-cols-5 gap-2 max-w-5xl pt-3">
-        {[...Array(groups.length)].map((_, i) => (
+        {[...Array(groupCases.length)].map((_, i) => (
           <div
             key={i}
             className="w-50 h-28 bg-Primary/40 rounded-xl animate-pulse"
@@ -37,19 +43,19 @@ const SolutionBox = ({ refresh }) => {
     );
   }
 
-  if (groups.length === 0) {
+  if (groupCases.length === 0) {
     return (
       <div className="flex justify-center w-full px-4 pt-5 text-Primary text-base">
-        You haven't joined any groups yet.
+        This group haven't created any solution yet.
       </div>
     );
   }
 
   return (
     <>
-      <div className="grid grid-cols-5 gap-2 max-w-5xl pt-3">
-        {groups.map((group) => (
-          <SolutionCard key={group.groupCode} group={group} />
+      <div className="grid grid-cols-3 gap-2 max-w-5xl pt-3">
+        {groupCases.map((groupCase) => (
+          <SolutionCard key={groupCase.caseCode} group={groupCase} />
         ))}
       </div>
     </>
@@ -57,39 +63,63 @@ const SolutionBox = ({ refresh }) => {
 };
 
 const SolutionCard = ({ group }) => {
+  const [isCreatingIdea, setIsCreatingIdea] = useState(false);
+  const email = localStorage.getItem("email");
+  const location = useLocation();
+  const pathParts = location.pathname.split('/');
+  const isGroupPage = pathParts[1] === 'group';
+  const groupPath = isGroupPage ? pathParts[2] : null;
   const navigation = useNavigate();
-  const memberCount = group.groupData?.groupUsers?.length ?? 0;
-  const tag = group.groupCase?.caseName || null;
-  const { changeTheme, theme, icons } = useTheme();  
+  const { icons } = useTheme();
 
-  // ฟังก์ชันแก้ไขเส้นทางไอคอน
-  const iconAdd = icons.add;
-  const iconVote = icons.vote;
+  const handleCreateIdea = async ({ ideaDescription }) => {
+    try {
+      const newIdea = await fetchAPI(`/groups/${groupPath}/groupCase/${group.caseCode}/caseIdeas`, "POST", {
+        ideaDescription: ideaDescription,
+        ideaCreateBy: email,
+      });
+      console.log("Create Idea Success", newIdea);
+      setIsCreatingIdea(false);
+    } catch (err) {
+      console.error("Create Idea error:", err.message);
+    }
+  };
 
   return (
     <>
-    <div className="flex flex-row  transition-colors duration-300 animate-fadeInUp">
-      <button 
-        onClick={() => navigation(`/group/${group.groupCode}`)}
-        className="w-50 z-10 bg-Primary/80 hover:bg-Primary cursor-pointer border-2 border-Primary text-Black rounded-l-xl shadow-md overflow-hidden flex flex-row justify-between">
-        <div className="flex-col flex justify-center items-center px-4 py-4 ">
-          <p className="text-Secondary text-sm font-bold truncate">
-            {group.groupName}
+    <div className="flex flex-row transition-colors duration-300 animate-fadeInUp">
+      <button
+        onClick={() => navigation(`/group/${groupPath}/groupCase/${group.caseCode}`)}
+        className="w-full z-10 bg-Primary/80 hover:bg-Primary cursor-pointer border-2 border-Primary text-Black rounded-l-xl shadow-md overflow-hidden flex flex-row justify-between">
+        <div className="w-full flex-col flex justify-start items-start px-4 py-4">
+          <p className="text-Secondary text-sm font-bold break-words truncate">
+            {group.caseName}
           </p>
-          <p className="text-Secondary text-sm line-clamp-2">
-            {group.groupDescription || "No description provided."}
+          <p className="text-Secondary text-sm break-words w-54 h-20 text-start">
+            {group.caseDescription || "No description provided."}
           </p>
         </div>
       </button>
-        <div className="flex flex-col justify-center items-center h-full">
-          <button className=" bg-Primary/80 hover:bg-Primary cursor-pointer h-full px-4 border-t-2 border-r-2 border-b-1 border-Primary rounded-tr-xl">
-            <img src={iconAdd} alt="Add" className="w-12" />
-          </button>
-          <button className=" bg-Primary/80 hover:bg-Primary cursor-pointer h-full px-4 border-b-2 border-r-2 border-t-1 border-Primary rounded-br-xl">
-            <img src={iconVote} alt="Vote" className="w-12" />
-          </button>
-        </div>
+      <div className="flex flex-col justify-center items-center h-full">
+        <button 
+          onClick={() => setIsCreatingIdea(true)}
+        className="bg-Primary/80 hover:bg-Primary cursor-pointer h-full px-4 border-t-2 border-r-2 border-b-1 border-Primary rounded-tr-xl">
+          <img src={icons.add} alt="Add" className="w-12" />
+        </button>
+        <button className="bg-Primary/80 hover:bg-Primary cursor-pointer h-full px-4 border-b-2 border-r-2 border-t-1 border-Primary rounded-br-xl">
+          <img src={icons.vote} alt="Vote" className="w-12" />
+        </button>
+      </div>
     </div>
+      {isCreatingIdea && (
+        <CreateIdea
+          onConfirm={handleCreateIdea}
+          onCancel={() => setIsCreatingIdea(false)}
+          caseName={group.caseName}
+          caseDescription={group.caseDescription || "No description provided."}
+          ideaDescription={""}
+        />
+      )}
     </>
   );
 };
