@@ -28,7 +28,7 @@ body {
   --color-Darker-Secondary: #2c303f;
   --color-Tertiary: #FAF8F1;
   --color-custom-red: #DC0E0E;
-  --color-custom-green: #0DCB0D;
+  --color-custom-green: #0edc0e;
 
   --animate-fadeInUp: fadeInUp 0.5s ease-in-out;
   @keyframes fadeInUp {

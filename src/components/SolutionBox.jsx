@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLocation } from "react-router-dom";
 import CreateIdea from "./CreateIdea";
+import VoteIdea from "./VoteIdea";
+
 
 const SolutionBox = ({ refresh }) => {
   const location = useLocation();
@@ -64,6 +66,7 @@ const SolutionBox = ({ refresh }) => {
 
 const SolutionCard = ({ group }) => {
   const [isCreatingIdea, setIsCreatingIdea] = useState(false);
+  const [isVotingIdea, setIsVotingIdea] = useState(false);
   const email = localStorage.getItem("email");
   const location = useLocation();
   const pathParts = location.pathname.split('/');
@@ -106,7 +109,9 @@ const SolutionCard = ({ group }) => {
         className="bg-Primary/80 hover:bg-Primary cursor-pointer h-full px-4 border-t-2 border-r-2 border-b-1 border-Primary rounded-tr-xl">
           <img src={icons.add} alt="Add" className="w-12" />
         </button>
-        <button className="bg-Primary/80 hover:bg-Primary cursor-pointer h-full px-4 border-b-2 border-r-2 border-t-1 border-Primary rounded-br-xl">
+        <button 
+          onClick={() => setIsVotingIdea(true)}
+          className="bg-Primary/80 hover:bg-Primary cursor-pointer h-full px-4 border-b-2 border-r-2 border-t-1 border-Primary rounded-br-xl">
           <img src={icons.vote} alt="Vote" className="w-12" />
         </button>
       </div>
@@ -118,6 +123,17 @@ const SolutionCard = ({ group }) => {
           caseName={group.caseName}
           caseDescription={group.caseDescription || "No description provided."}
           ideaDescription={""}
+        />
+      )}
+      {isVotingIdea && (
+        <VoteIdea
+          onConfirm={handleCreateIdea}
+          onCancel={() => setIsVotingIdea(false)}
+          caseName={group.caseName}
+          caseDescription={group.caseDescription || "No description provided."}
+          ideaDescription={""}
+          groupPath={groupPath}
+          caseCode={group.caseCode}
         />
       )}
     </>
