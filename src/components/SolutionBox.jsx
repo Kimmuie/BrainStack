@@ -92,7 +92,7 @@ const SolutionCard = ({ group }) => {
     <>
     <div className="flex flex-row transition-colors duration-300 animate-fadeInUp">
       <button
-        onClick={() => navigation(`/group/${groupPath}/groupCase/${group.caseCode}`)}
+        onClick={() => navigation(`/group/${groupPath}/${group.caseCode}`)}
         className="w-full z-10 bg-Primary/80 hover:bg-Primary cursor-pointer border-2 border-Primary text-Black rounded-l-xl shadow-md overflow-hidden flex flex-row justify-between">
         <div className="w-full flex-col flex justify-start items-start px-4 py-4">
           <p className="text-Secondary text-sm font-bold break-words truncate">

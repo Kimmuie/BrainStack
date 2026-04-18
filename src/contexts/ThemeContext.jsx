@@ -4,20 +4,20 @@ import { fetchAPI } from "../service/fetchapi"
 const themes = {
   light: { 
     Primary: "#D2AB61",
-    DarkerPrimary: "#c09957",
-    Secondary: "#FAF8F1",
-    DarkerSecondary: "#E1DFD8",
+    "Darker-Primary": "#c09957",
+    Secondary: "#f6f5f3",
+    "Darker-Secondary": "#E1DFD8",
     Tertiary: "#313647",
-    DarkerTertiary: "#2c303f",
+    "DarkerTertiary": "#2c303f",
     customred: "#DC0E0E",
   },
   dark: { 
     Primary: "#D2AB61",
-    DarkerPrimary: "#c09957",
+    "Darker-Primary": "#c09957",
     Secondary: "#313647",
-    DarkerSecondary: "#2c303f",
-    Tertiary: "#FAF8F1",
-    DarkerTertiary: "#E1DFD8",
+    "Darker-Secondary": "#2c303f",
+    Tertiary: "#f6f5f3",
+    "Darker-Tertiary": "#E1DFD8",
     customred: "#DC0E0E",
   },
 };

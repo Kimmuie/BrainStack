@@ -427,6 +427,21 @@ app.post('/Brainstack/groups/:groupCode/groupCase/:caseCode/caseIdeas/:ideaCode/
     }
 });
 
+app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) => {
+    const { groupCode, caseCode } = req.params;
+    try {
+        const group = await db.collection('groups').findOne({ groupCode });
+        if (!group) return res.status(404).json({ error: 'Group not found' });
+ 
+        const groupCase = group.groupCase.find(c => c.caseCode === caseCode);
+        if (!groupCase) return res.status(404).json({ error: 'Case not found' });
+
+        res.json({ groupCase: groupCase });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // app.post("/Brainstack/groups/:groupCode/groupCase/:caseIndex/idea/:index/downvote", async (req, res) => {
 //     const { groupCode, index } = req.params;
 

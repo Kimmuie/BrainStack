@@ -13,6 +13,7 @@ const Navbar = () => {
     const pathParts = location.pathname.split('/');
     const isGroupPage = pathParts[1] === 'group';
     const groupPath = isGroupPage ? pathParts[2] : null;
+    const groupCase = isGroupPage ? pathParts[3] : null;
     const [groupName, setGroupName] = useState(null);
     const email = localStorage.getItem('email');
     const [user, setUser] = useState(null);
@@ -95,7 +96,7 @@ const Navbar = () => {
         <nav className="fixed z-50 bg-Secondary w-full h-20 flex items-center justify-between px-8 py-4 border-b-2 border-Primary">
         {isGroupPage &&
         <button
-          onClick={() => navigate("/home")}
+          onClick={() => groupCase ? navigate(`/group/${groupPath}`) : navigate("/home") }
           className="inset-0 -z-10 absolute whitespace-nowrap justify-center items-center flex font-bold text-Primary hover:text-Darker-Primary hover:underline rounded-full cursor-pointer transition-colors"
         >
           Back

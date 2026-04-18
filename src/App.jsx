@@ -6,6 +6,7 @@ import NotFound from "./pages/Error";
 import MainPage from "./pages/MainPage";
 import GroupPage from "./pages/GroupPage";
 import License from "./components/License";
+import IdeaPage from "./pages/IdeaPage";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/home" element={<MainPage />} />
           <Route path="/group/:groupPath" element={<GroupPage />} />
+          <Route path="/group/:groupPath/:caseCode" element={<IdeaPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <License />
