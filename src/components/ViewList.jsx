@@ -3,7 +3,7 @@ import { fetchAPI } from "../service/fetchapi";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLocation } from "react-router-dom";
 
-const ViewList = () => {
+const ViewList = ({onViewChange}) => {
     const location = useLocation();
     const pathParts = location.pathname.split('/');
     const isGroupPage = pathParts[1] === 'group';
@@ -17,6 +17,11 @@ const ViewList = () => {
     const [totalIdeas, setTotalIdeas] = useState(0);
     const [votedCount, setVotedCount] = useState(0);
     const [unvotedIdeas, setUnvotedIdeas] = useState([]);
+    const { icons } = useTheme();  
+
+    // ฟังก์ชันแก้ไขเส้นทางไอคอน
+    const iconList = icons.list;
+    const iconMindmap = icons.mindmap;
 
     useEffect(() => {
         const loadIdeas = async () => {
@@ -93,16 +98,22 @@ const ViewList = () => {
                     </button>
                     <div>
                         <button
-                        onClick={() => setCurrentView("list")}
+                        // onClick={() => {
+                        //     setCurrentView("list");
+                        //     onViewChange("list");
+                        // }}
                         className={`${currentView == "list" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tl-lg border-2 border-r-1 border-b-0 border-Primary transition-colors`}
                         >
-                        <img src={currentView == "list" ? "/img/icon_list_dark.svg" : "/img/icon_list_gold.svg"} width="40" height="40" alt="list" className="p-1"/>
+                        <img src={currentView == "list" ? `${iconList}` : "/img/icon_list_gold.svg"} width="40" height="40" alt="list" className="p-1"/>
                         </button>
                         <button
-                        onClick={() => setCurrentView("mindmap")}
+                        onClick={() => {
+                            setCurrentView("mindmap");
+                            onViewChange("mindmap");
+                        }}
                         className={`${currentView == "mindmap" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tr-lg border-2 border-l-1 border-b-0 border-Primary transition-colors`}
                         >
-                        <img src={currentView == "mindmap" ? "/img/icon_mindmap_dark.svg" : "/img/icon_mindmap_gold.svg"} width="40" height="40" alt="mindmap" className="p-1"/>
+                        <img src={currentView == "mindmap" ? `${iconMindmap}` : "/img/icon_mindmap_gold.svg"} width="40" height="40" alt="mindmap" className="p-1"/>
                         </button>
                     </div>
                 </div>
@@ -126,6 +137,9 @@ const ViewList = () => {
 const IdeaRow = ({ caseIdea, index, isFirst, isLast, currentMode }) => {
     const[ selectedIdea, setSelectedIdea ] = useState(false);
     const[ openComment, setOpenComment ] = useState(false);
+    const { icons } = useTheme();  
+    
+    const iconComment = icons.comment;
 
 
     const emailToName = async (email) => {
@@ -153,11 +167,11 @@ const IdeaRow = ({ caseIdea, index, isFirst, isLast, currentMode }) => {
                         <button onClick={() => setSelectedIdea(prev => !prev)} className={`cursor-pointer border-2 border-Primary w-4 h-4 ${selectedIdea ? "bg-Primary" : "bg-Secondary"}`} />
                         }
                     </div>
-                    <div className="gap-2 flex flex-col">
-                        <p className="text-Secondary bg-Primary rounded-xl px-2 py-1 text-xs">
+                    <div className="gap-2 flex flex-col w-full">
+                        <p className="text-Secondary bg-Primary rounded-xl px-2 py-1 text-xs w-fit">
                             {useEmailToName(caseIdea.ideaCreateBy)}
                         </p>
-                        <h1 className="text-Primary text-base font-bold">
+                        <h1 className="text-Primary text-base font-bold w-full">
                             {caseIdea.ideaDescription}
                         </h1>
                     </div>
@@ -192,7 +206,7 @@ const IdeaRow = ({ caseIdea, index, isFirst, isLast, currentMode }) => {
                 {caseIdea.ideaComment.length > 0 &&
                 <button onClick={() => setOpenComment(true)} className="gap-3 flex flex-row items-center text-Secondary text-sm font-bold p-4 w-full ">
                     <div className="flex flex-row items-center gap-2 bg-Darker-Primary hover:bg-Primary cursor-pointer border-Primary pl-2 pr-4 rounded-md">
-                        <img src="/img/icon_comment_dark.svg" width="40" height="40" alt="list" className="p-2"/>
+                        <img src={iconComment} width="40" height="40" alt="list" className="p-2"/>
                         Open Comment
                     </div>
                 </button>
@@ -207,10 +221,13 @@ const IdeaRow = ({ caseIdea, index, isFirst, isLast, currentMode }) => {
 }
 
 const CommentCard = ({ ideaComment }) => {
+    const { icons } = useTheme();  
+    const iconComment = icons.comment;
+
     const commenterName = useEmailToName(ideaComment.commentUser);
     return (
         <div key={ideaComment.commentCode} className="flex flex-row items-start gap-2 bg-Darker-Primary border-Primary pl-2 pr-4 h-full py-2 rounded-md animate-fadeInUp">
-            <img src="/img/icon_comment_dark.svg" width="40" height="40" alt="comment" className="p-2"/>
+            <img src={iconComment} width="40" height="40" alt="comment" className="p-2"/>
             <div className="flex flex-col">
                 <span className="text-Secondary text-sm font-bold break-all">{commenterName}</span>
                 <span className="text-Secondary text-sm break-all">{ideaComment.commentData}</span>

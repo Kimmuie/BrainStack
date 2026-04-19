@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
+    "@xyflow/react": "^12.10.2",
     "dotenv": "^17.3.1",
     "firebase": "^12.11.0",
     "react": "^19.2.4",

@@ -6,7 +6,7 @@ const themes = {
     Primary: "#D2AB61",
     "Darker-Primary": "#c09957",
     Secondary: "#f6f5f3",
-    "Darker-Secondary": "#E1DFD8",
+    "Darker-Secondary": "#edebe7",
     Tertiary: "#313647",
     "DarkerTertiary": "#2c303f",
     customred: "#DC0E0E",
@@ -17,7 +17,7 @@ const themes = {
     Secondary: "#313647",
     "Darker-Secondary": "#2c303f",
     Tertiary: "#f6f5f3",
-    "Darker-Tertiary": "#E1DFD8",
+    "Darker-Tertiary": "#edebe7",
     customred: "#DC0E0E",
   },
 };
@@ -32,6 +32,11 @@ const themeIcons = {
     filterOn: "/img/icon_filter_on_light.svg",
     add: "/img/icon_add_light.svg",
     vote: "/img/icon_vote_light.svg",
+    list: "/img/icon_list_light.svg",
+    mindmap: "/img/icon_mindmap_light.svg",
+    comment: "/img/icon_comment_light.svg",
+    upvote: "/img/icon_upvote_light.svg",
+    downvote: "/img/icon_downvote_light.svg",
   },
   dark: {
     user: "/img/icon_user_dark.svg",
@@ -42,13 +47,16 @@ const themeIcons = {
     filterOn: "/img/icon_filter_on_dark.svg",
     add: "/img/icon_add_dark.svg",
     vote: "/img/icon_vote_dark.svg",
+    list: "/img/icon_list_dark.svg",
+    mindmap: "/img/icon_mindmap_dark.svg",
+    comment: "/img/icon_comment_dark.svg",
+    upvote: "/img/icon_upvote_dark.svg",
+    downvote: "/img/icon_downvote_dark.svg",
   },
 };
 
-// Create context
 const ThemeContext = createContext();
 
-// Custom hook for using the theme context
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
