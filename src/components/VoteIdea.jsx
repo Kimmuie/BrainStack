@@ -73,7 +73,7 @@ const VoteIdea = ({ onConfirm, onCancel, caseName, caseDescription, groupPath, c
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4 z-90 animate-popUp">
       <ClickOutside
-        className="relative flex flex-row gap-15 justify-center items-center"
+        className="relative flex flex-col sm:flex-row gap-4 sm:gap-5 lg:gap-15 w-full justify-center items-center"
         onOutsideClick={onCancel}
       >
         {/* Left panel */}
@@ -97,7 +97,7 @@ const VoteIdea = ({ onConfirm, onCancel, caseName, caseDescription, groupPath, c
           </div>
           <div className="p-4 gap-4 flex flex-col">
             <h1 className="text-Secondary text-sm font-bold">{caseName}</h1>
-            <p className="text-Secondary text-sm">{caseDescription}</p>
+            <p className="text-Secondary text-sm break-all">{caseDescription}</p>
           </div>
           <div className="flex justify-start mt-4 border-t-1 border-t-Secondary/60 p-4 gap-4">
             <p className="text-Secondary text-sm font-bold">

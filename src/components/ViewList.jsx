@@ -90,7 +90,7 @@ const ViewList = ({onViewChange}) => {
 
     return (
         <>
-        <div className="flex flex-col transition-colors duration-300 animate-fadeInUp w-full h-full gap-10">
+        <div className="flex flex-col transition-colors duration-300 animate-fadeInUp w-full h-full gap-4 lg:gap-10">
             <div className="border-2 border-Primary bg-Darker-Primary rounded-xl shadow-lg w-full flex flex-row h-full">
                 <div className="flex flex-row justify-between items-center h-full mt-3 px-3">
                     <img src="/img/icon_case_gold.svg" width="40" height="40" alt="case" className="bg-Secondary p-2 rounded-full" />
@@ -146,34 +146,30 @@ const ViewList = ({onViewChange}) => {
                 />
             )}
             <div className="flex flex-col h-full">
-                <div className="flex flex-row w-full justify-between">
+                <div className="flex flex-col-reverse gap-3 sm:gap-3 sm:flex-row w-full justify-between">
                     <div className="flex flex-row gap-3">
                         <button
                         onClick={() => handleModeToggle("merge")}
-                        className={`${currentMode == "merge" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} w-50 font-bold  px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
+                        className={`${currentMode == "merge" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} w-full lg:w-50 whitespace-nowrap font-bold py-2  px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
                         >
                         Merge Ideas
                         </button>
                         <button
                         onClick={() => handleModeToggle("enhance")}
-                        className={`${currentMode == "enhance" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} w-50 font-bold px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
+                        className={`${currentMode == "enhance" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} w-full lg:w-50 whitespace-nowrap font-bold py-2 px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
                         >
                         Enhance Ideas
                         </button>
                     </div>
                     <div className="flex flex-row gap-3">
                         <button
-                        className="font-bold bg-Primary text-Secondary hover:text-Primary px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Darker-Secondary cursor-pointer transition-colors"
+                        className="w-full py-0 sm:py-3 font-bold bg-Primary text-Secondary hover:text-Primary  px-0 sm:px-4 rounded-lg sm:rounded-b-none border-2 sm:border-b-0 border-Primary hover:bg-Darker-Secondary cursor-pointer transition-colors"
                         >
                         Sort by Voting
                         </button>
-                        <div>
+                        <div className="flex w-full">
                             <button
-                            // onClick={() => {
-                            //     setCurrentView("list");
-                            //     onViewChange("list");
-                            // }}
-                            className={`${currentView == "list" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tl-lg border-2 border-r-1 border-b-0 border-Primary transition-colors`}
+                            className={`${currentView == "list" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} flex justify-center items-center font-bold px-4 h-full w-full rounded-tl-lg rounded-bl-lg sm:rounded-bl-none border-2 border-r-1 sm:border-b-0 border-Primary transition-colors`}
                             >
                             <img src={currentView == "list" ? `${iconList}` : "/img/icon_list_gold.svg"} width="40" height="40" alt="list" className="p-1"/>
                             </button>
@@ -182,7 +178,7 @@ const ViewList = ({onViewChange}) => {
                                 setCurrentView("mindmap");
                                 onViewChange("mindmap");
                             }}
-                            className={`${currentView == "mindmap" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tr-lg border-2 border-l-1 border-b-0 border-Primary transition-colors`}
+                            className={`${currentView == "mindmap" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} flex justify-center items-center font-bold px-4 h-full w-full rounded-tr-lg rounded-br-lg sm:rounded-br-none border-2 border-l-1 sm:border-b-0 border-Primary transition-colors`}
                             >
                             <img src={currentView == "mindmap" ? `${iconMindmap}` : "/img/icon_mindmap_gold.svg"} width="40" height="40" alt="mindmap" className="p-1"/>
                             </button>
@@ -251,25 +247,25 @@ const IdeaRow = ({ caseIdea, index, isFirst, isLast, currentMode, onSelect, isSe
                         <p className="text-Secondary bg-Primary rounded-xl px-2 py-1 text-xs w-fit">
                             {useEmailToName(caseIdea.ideaCreateBy)}
                         </p>
-                        <h1 className="text-Primary text-base font-bold w-full">
+                        <h1 className="text-Primary text-base font-bold w-full whitespace-pre-line break-all">
                             {caseIdea.ideaDescription}
                         </h1>
                     </div>
                 </div>
                 <div className="p-4 gap-2 flex flex-col">
-                    <span className="text-Primary px-2 text-sm font-bold flex flex-row items-center justify-center">
-                    <img src="/img/icon_upvote_gold.svg" width="40" height="40" alt="list" className="p-1"/>
+                    <span className="text-Primary sm:px-2 text-sm font-bold flex flex-row items-center justify-center">
+                    <img src="/img/icon_upvote_gold.svg" width="40" height="40" alt="list" className="sm:p-1"/>
                         {caseIdea.ideaUpvote}
                     </span>
-                    <span className="text-Primary px-2 text-sm font-bold flex flex-row items-center justify-center">
-                    <img src="/img/icon_downvote_gold.svg" width="40" height="40" alt="list" className="p-1"/>
+                    <span className="text-Primary sm:px-2 text-sm font-bold flex flex-row items-center justify-center">
+                    <img src="/img/icon_downvote_gold.svg" width="40" height="40" alt="list" className="sm:p-1"/>
                         {caseIdea.ideaDownvote}
                     </span>
                 </div>
             </div>
             {openComment ? (
             <>
-            <div className="grid grid-cols-4 gap-2 w-full h-full p-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full h-full p-4">
                 {caseIdea.ideaComment.map((ideaComment) => (
                     <CommentCard
                         key={ideaComment.commentCode}

@@ -19,10 +19,10 @@ const CreateIdea = ({ onConfirm, onCancel, caseName, caseDescription }) => {
 
   return (
     <div className="fixed inset-0  backdrop-blur-xs flex items-center justify-center p-4 z-90 animate-popUp">
-      <ClickOutside className="relative flex flex-row justify-center items-start" onOutsideClick={onCancel}>
+      <ClickOutside className={`relative flex flex-row justify-center items-start ${openCase ? "translate-x-0 sm:translate-x-40 lg:translate-x-0 translate-y-30 sm:translate-y-0"  : ""}  duration-500 lg:duration-0 `} onOutsideClick={onCancel}>
       <button 
         onClick={() => setOpenCase(prev => !prev)}
-        className={`absolute left-0 ${openCase ? "-translate-x-full" : "-translate-x-14"} duration-600 top-0 -z-10 flex max-w-xs bg-Darker-Primary hover:bg-Primary cursor-pointer p-2 border-y-2 border-l-2 border-Primary text-Black rounded-l-xl shadow-md overflow-hidden flex-row justify-between`}>
+        className={`absolute left-0 ${openCase ? "-translate-y-full sm:-translate-y-0 -translate-x-0 sm:-translate-x-full" : "-translate-y-14 sm:-translate-y-0 -translate-x-0 sm:-translate-x-14"} duration-600 top-0 -z-10 flex w-full sm:max-w-xs bg-Darker-Primary hover:bg-Primary cursor-pointer p-2 border-b-0 sm:border-b-2 border-l-2 sm:border-l-0 border-t-2 border-l-2 border-Primary text-Black rounded-t-xl sm:rounded-t-none sm:rounded-l-xl shadow-md overflow-hidden flex-col sm:flex-row justify-between`}>
         <img src="/img/icon_case_gold.svg" width="40" height="40" alt="alert" 
             className="bg-Secondary p-2 rounded-full"/>
         <div className="w-full flex-col flex justify-start items-start px-4 py-4">
@@ -34,7 +34,7 @@ const CreateIdea = ({ onConfirm, onCancel, caseName, caseDescription }) => {
           </p>
         </div>
       </button>
-        <div className="border-2 border-Primary bg-Darker-Primary rounded-b-xl rounded-r-xl shadow-lg w-sm flex flex-col h-fit" >
+        <div className="border-2 border-Primary bg-Darker-Primary rounded-b-xl  rounded-tr-none sm:rounded-tr-xl shadow-lg w-sm flex flex-col h-fit" >
           <div className="flex flex-row justify-start items-center h-full mt-3 ml-3">
             <img src="/img/icon_idea_gold.svg" width="40" height="40" alt="alert" className="bg-Secondary p-2 rounded-full"/>
             <h3 className="text-lg font-prompt font-semibold text-Secondary ml-4">Create Idea</h3>

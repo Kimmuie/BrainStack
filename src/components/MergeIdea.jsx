@@ -61,7 +61,7 @@ const MergeIdea = ({ onCancel, caseName, caseDescription, selectedIdea }) => {
       <div className="flex flex-col justify-center gap-1 items-center absolute left-0">
         <button 
           onClick={() => setOpenAi(prev => !prev)}
-          className={`${openAi ? "-translate-x-full" : "-translate-x-14"} duration-600 top-0 gap-3 -z-10 flex max-w-xs bg-Darker-Primary hover:bg-Primary cursor-pointer p-2 border-y-2 border-l-2 border-Primary text-Black rounded-l-xl shadow-md overflow-hidden flex-row justify-between`}>
+          className={`${openAi ? "-translate-x-full" : "-translate-x-19"} duration-600 top-0 gap-3 -z-10 flex max-w-xs bg-Darker-Primary hover:bg-Primary cursor-pointer p-2 border-y-2 border-l-2 border-Primary text-Black rounded-l-xl shadow-md overflow-hidden flex-row justify-between`}>
           <img src="/img/icon_gemini_gold.svg" width="40" height="40" alt="alert" className="bg-Secondary p-2 rounded-full"/>
           <button className="text-Primary bg-Secondary hover:bg-Primary hover:text-Secondary duration-300 border-2 border-Secondary cursor-cell rounded-full text-sm font-bold break-words truncate px-4 py-3">
             Merge With Gemini

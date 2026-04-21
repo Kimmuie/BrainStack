@@ -29,7 +29,7 @@ const GroupInfo = () => {
 
   return (
     <>
-      <div className="flex flex-row w-lg gap-4 h-screen animate-fadeInUp">
+      <div className="flex flex-row w-full xl:w-lg gap-4 h-full xl:h-screen animate-fadeInUp">
           <div className="border-2 border-Primary bg-Darker-Primary rounded-xl shadow-lg w-full flex flex-row h-full">
               <div className="flex flex-col justify-start w-full">
                 <div className="flex flex-row justify-start items-center w-full h-fit gap-2 px-4 pt-4">

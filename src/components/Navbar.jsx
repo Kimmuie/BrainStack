@@ -109,7 +109,7 @@ const Navbar = () => {
                 <li className="text-Primary text-2xl font-bold hidden sm:block">BrainStack</li>
             </button>
             <button 
-                className="text-Secondary bg-Primary text-base font-bold border-2 px-3 py-1 rounded-full cursor-pointer hidden sm:block">
+                className="text-Secondary bg-Primary text-base font-bold border-2 px-3 py-1 rounded-full cursor-pointer hidden lg:block">
             {isGroupPage && groupName ? groupName : "All Group"}
             </button>
         </ul>

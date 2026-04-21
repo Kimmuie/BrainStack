@@ -15,7 +15,7 @@ const IdeaPage = () => {
   return (
     <>
       <div className="h-full w-full flex flex-col items-center justify-center relative overflow-hidden">
-          <section className="w-6xl bg-Secondary flex flex-col items-center min-h-screen px-8 py-8">
+          <section className="w-full sm:w-full lg::w-6xl bg-Secondary flex flex-col items-center min-h-screen px-8 py-8">
             {caseView === "list" ? (
               <ViewList onViewChange={handleViewChange}/>
             ) : (

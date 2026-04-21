@@ -1,8 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { fetchAPI } from "../service/fetchapi";
 import { useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
-import { ReactFlow, Background, Controls, useNodesState, useEdgesState } from "@xyflow/react";
+import {
+    ReactFlow, Background, Controls,
+    useNodesState, useEdgesState,
+    Handle, Position   // ← Fix 2: import Handle & Position
+} from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import MergeIdea from "../components/MergeIdea";
 import EnhanceIdea from "../components/EnhanceIdea";
@@ -10,8 +14,9 @@ import EnhanceIdea from "../components/EnhanceIdea";
 const CaseNode = ({ data }) => (
     <div className="bg-Primary text-Secondary rounded-xl px-5 py-3 shadow-lg border-2 border-Secondary flex flex-col items-center min-w-[160px]">
         <span className="text-xs font-bold opacity-70 leading-none mb-1">CASE</span>
-        <span className="text-xs font-bold ">{data.caseName}</span>
+        <span className="text-xs font-bold">{data.caseName}</span>
         <span className="text-sm font-bold text-center leading-tight">{data.caseDescription}</span>
+        <Handle type="source" position={Position.Top} style={{ top: "70%", opacity: 0, transform: "translate(-50%, -50%)" }} />
     </div>
 );
 
@@ -19,14 +24,14 @@ const IdeaNode = ({ data }) => {
     const { icons } = useTheme();
     const iconUpvote = icons.upvote;
     const iconDownvote = icons.downvote;
-
     const isSelected = data.selected;
 
     return (
         <div
             onClick={() => data.onSelect(data.id)}
-            className={`cursor-grab active:cursor-grabbing rounded-xl px-4 py-3 shadow-md border-2 transition-colors min-w-28 max-w-xs ${isSelected ? "bg-Primary border-Secondary" : "bg-Darker-Secondary border-Primary hover:border-Darker-Primary" }`}
+            className={`cursor-grab active:cursor-grabbing rounded-xl px-4 py-3 shadow-md border-2 transition-colors min-w-28 max-w-xs ${isSelected ? "bg-Primary border-Secondary" : "bg-Darker-Secondary border-Primary hover:border-Darker-Primary"}`}
         >
+            <Handle type="target" position={Position.Top} style={{ top: "70%", opacity: 0, transform: "translate(-50%, -50%)" }} />
             <span className={`text-xs leading-none px-2 py-0.5 rounded-xl mb-2 inline-block ${isSelected ? "bg-Secondary text-Primary" : "bg-Primary text-Secondary"}`}>
                 {useEmailToName(data.creatorName)}
             </span>
@@ -34,13 +39,11 @@ const IdeaNode = ({ data }) => {
                 {data.ideaDescription}
             </p>
             <div className="flex flex-row gap-3 mt-2">
-                <span className={`text-xs font-bold flex items-center gap-1
-                    ${isSelected ? "text-Secondary" : "text-Primary"}`}>
+                <span className={`text-xs font-bold flex items-center gap-1 ${isSelected ? "text-Secondary" : "text-Primary"}`}>
                     <img src={isSelected ? `${iconUpvote}` : "/img/icon_upvote_gold.svg"} width="16" height="16" alt="up" />
                     {data.ideaUpvote}
                 </span>
-                <span className={`text-xs font-bold flex items-center gap-1
-                    ${isSelected ? "text-Secondary" : "text-Primary"}`}>
+                <span className={`text-xs font-bold flex items-center gap-1 ${isSelected ? "text-Secondary" : "text-Primary"}`}>
                     <img src={isSelected ? `${iconDownvote}` : "/img/icon_downvote_gold.svg"} width="16" height="16" alt="down" />
                     {data.ideaDownvote}
                 </span>
@@ -54,29 +57,28 @@ const nodeTypes = {
     ideaNode: IdeaNode,
 };
 
-const buildGraph = (currentCase, allIdeas, selectedIds, onSelect) => {
+const buildGraph = (currentCase, allIdeas, selectedIds, onSelect, savedPositions) => {
     const centerX = 400;
     const centerY = 300;
-    const radius = 280;
+    const minRadius = 320;
+    const perNodeSpread = 55;
+    const radius = Math.max(minRadius, (allIdeas.length * perNodeSpread) / (2 * Math.PI));
 
     const caseNode = {
         id: "case",
         type: "caseNode",
-        position: { x: centerX, y: centerY },
+        position: savedPositions["case"] ?? { x: centerX, y: centerY },
         draggable: true,
-        data: { 
-            caseName: currentCase.caseName ,
-            caseDescription: currentCase.caseDescription ?? "" 
+        data: {
+            caseName: currentCase.caseName,
+            caseDescription: currentCase.caseDescription ?? "",
         },
     };
 
     const ideaNodes = allIdeas.map((idea, index) => {
         const angle = (2 * Math.PI * index) / allIdeas.length - Math.PI / 2;
+        const ideaId = String(idea.ideaCode ?? idea._id ?? idea.id ?? idea.ideaId ?? idea.idea_id ?? `idea-${index}`);
 
-        // Safely resolve ID — handle _id, id, ideaId, idea_id, or fallback to index
-        const ideaId = idea.ideaCode ?? idea._id ?? idea.id ?? idea.ideaId ?? idea.idea_id ?? `idea-${index}`;
-
-        // Safely resolve creator name — handle string, object with name/email/username
         const rawCreator = idea.ideaCreateBy;
         const creatorName =
             typeof rawCreator === "string"
@@ -84,21 +86,21 @@ const buildGraph = (currentCase, allIdeas, selectedIds, onSelect) => {
                 : rawCreator?.name ?? rawCreator?.username ?? rawCreator?.email ?? "Unknown";
 
         return {
-            id: String(ideaId),
+            id: ideaId,
             type: "ideaNode",
-            position: {
+            position: savedPositions[ideaId] ?? {
                 x: centerX + radius * Math.cos(angle),
                 y: centerY + radius * Math.sin(angle),
             },
             draggable: true,
             data: {
-                id: String(ideaId),
+                id: ideaId,
                 ideaDescription: idea.ideaDescription,
                 creatorName,
                 ideaUpvote: idea.ideaUpvote ?? 0,
                 ideaDownvote: idea.ideaDownvote ?? 0,
                 ideaComments: idea.ideaComments ?? [],
-                selected: selectedIds.includes(String(ideaId)),
+                selected: selectedIds.includes(ideaId),
                 onSelect,
             },
         };
@@ -109,7 +111,7 @@ const buildGraph = (currentCase, allIdeas, selectedIds, onSelect) => {
         return {
             id: `edge-${ideaId}`,
             source: "case",
-            target: ideaId,
+            target: ideaId,   
             style: { stroke: "var(--color-Primary, #c9a84c)", strokeWidth: 1.5 },
             animated: false,
         };
@@ -138,14 +140,24 @@ const ViewMindmap = ({ onViewChange }) => {
     const [mergingIdea, setMergingIdea] = useState(false);
     const [enhancingIdea, setEnhancingIdea] = useState(false);
     const [mergingError, setMergingError] = useState(false);
-    const { icons } = useTheme();  
+    const { icons } = useTheme();
 
-    // ฟังก์ชันแก้ไขเส้นทางไอคอน
     const iconList = icons.list;
     const iconMindmap = icons.mindmap;
 
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+    const nodePositions = useRef({});
+
+    const handleNodesChange = useCallback((changes) => {
+        changes.forEach((change) => {
+            if (change.type === "position" && change.position) {
+                nodePositions.current[change.id] = change.position;
+            }
+        });
+        onNodesChange(changes);
+    }, [onNodesChange]);
 
     const handleSelect = useCallback((id) => {
         if (currentMode === "") return;
@@ -160,7 +172,9 @@ const ViewMindmap = ({ onViewChange }) => {
 
     useEffect(() => {
         if (!currentCase.caseName && allIdeas.length === 0) return;
-        const { nodes: n, edges: e } = buildGraph(currentCase, allIdeas, selectedIds, handleSelect);
+        const { nodes: n, edges: e } = buildGraph(
+            currentCase, allIdeas, selectedIds, handleSelect, nodePositions.current
+        );
         setNodes(n);
         setEdges(e);
     }, [currentCase, allIdeas, selectedIds, handleSelect]);
@@ -169,21 +183,13 @@ const ViewMindmap = ({ onViewChange }) => {
         const loadIdeas = async () => {
             setLoading(true);
             const data = await fetchAPI(`/groups/${groupPath}/groupCase/${caseCode}/caseIdeas`, "GET");
-            console.log("[ViewMindmap] raw ideas response:", data);
-
             if (data) {
                 const ideas = Array.isArray(data)
                     ? data
-                    : Array.isArray(data.caseIdeas)
-                    ? data.caseIdeas
-                    : Array.isArray(data.ideas)
-                    ? data.ideas
-                    : Array.isArray(data.groupCase)
-                    ? data.groupCase
+                    : Array.isArray(data.caseIdeas) ? data.caseIdeas
+                    : Array.isArray(data.ideas) ? data.ideas
+                    : Array.isArray(data.groupCase) ? data.groupCase
                     : [];
-
-                console.log("[ViewMindmap] resolved ideas array:", ideas);
-
                 setAllIdeas(ideas);
                 setTotalIdeas(ideas.length);
                 const unvoted = ideas.filter((idea) => !idea.ideaVoteUser?.includes(email));
@@ -199,7 +205,6 @@ const ViewMindmap = ({ onViewChange }) => {
         if (!email) return;
         const loadCase = async () => {
             const data = await fetchAPI(`/groups/${groupPath}/groupCase/${caseCode}`, "GET");
-            console.log("[ViewMindmap] raw case response:", data); // ← debug log
             if (data) setCurrentCase(data.groupCase ?? data ?? {});
         };
         loadCase();
@@ -217,49 +222,44 @@ const ViewMindmap = ({ onViewChange }) => {
             setEnhancingIdea(true);
         } else {
             setMergingError(true);
-             setTimeout(() => {
-                setMergingError(false);
-            }, 10000);
+            setTimeout(() => setMergingError(false), 10000);
         }
     };
 
     return (
         <div className="flex flex-col transition-colors duration-300 animate-fadeInUp w-full h-full">
             <div className="flex flex-row w-full justify-between">
-                <div className="flex flex-row gap-3">
+                <div className="flex flex-row gap-3 w-full">
                     <button
                         onClick={() => handleModeToggle("merge")}
-                        className={`${currentMode === "merge" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} font-bold px-4 py-2 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
+                        className={`${currentMode === "merge" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} text-sm sm:text-base font-bold px-4 py-2 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
                     >
                         Merge Ideas
                     </button>
                     <button
                         onClick={() => handleModeToggle("enhance")}
-                        className={`${currentMode === "enhance" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} font-bold px-4 py-2 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
+                        className={`${currentMode === "enhance" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} text-sm sm:text-base font-bold px-4 py-2 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
                     >
                         Enhance Ideas
                     </button>
                 </div>
-                <div className="flex flex-row gap-3">
+                <div className="flex flex-row gap-3 w-full justify-end">
                     <div>
                         <button
-                            onClick={() => {
-                                setCurrentView("list");
-                                onViewChange("list");
-                            }}
-                            className={`${currentView == "list" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tl-lg border-2 border-r-1 border-b-0 border-Primary transition-colors`}
+                            onClick={() => { setCurrentView("list"); onViewChange("list"); }}
+                            className={`${currentView === "list" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tl-lg border-2 border-r-1 border-b-0 border-Primary transition-colors`}
                         >
-                            <img src={currentView == "list" ? `${iconList}` : "/img/icon_list_gold.svg"} width="40" height="40" alt="list" className="p-1"/>
+                            <img src={currentView === "list" ? `${iconList}` : "/img/icon_list_gold.svg"} width="40" height="40" alt="list" className="p-1"/>
                         </button>
                         <button
-                            className={`${currentView == "mindmap" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tr-lg border-2 border-l-1 border-b-0 border-Primary transition-colors`}
+                            className={`${currentView === "mindmap" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tr-lg border-2 border-l-1 border-b-0 border-Primary transition-colors`}
                         >
-                            <img src={currentView == "mindmap" ? `${iconMindmap}` : "/img/icon_mindmap_gold.svg"} width="40" height="40" alt="mindmap" className="p-1"/>
+                            <img src={currentView === "mindmap" ? `${iconMindmap}` : "/img/icon_mindmap_gold.svg"} width="40" height="40" alt="mindmap" className="p-1"/>
                         </button>
                     </div>
                 </div>
             </div>
-            <div className="w-full rounded-b-xl border-2 border-Primary overflow-hidden" style={{ height: "450px" }}>
+            <div className="w-full rounded-b-xl border-2 border-Primary overflow-hidden h-[calc(100vh-35vh)]">
                 {loading ? (
                     <div className="flex items-center justify-center h-full text-Secondary text-sm">
                         Loading...
@@ -268,12 +268,12 @@ const ViewMindmap = ({ onViewChange }) => {
                     <ReactFlow
                         nodes={nodes}
                         edges={edges}
-                        onNodesChange={onNodesChange}
+                        onNodesChange={handleNodesChange}   // ← Fix 3: use wrapper
                         onEdgesChange={onEdgesChange}
                         nodeTypes={nodeTypes}
                         fitView
                         fitViewOptions={{ padding: 0.2 }}
-                        minZoom={0.6}
+                        minZoom={0.4}
                         maxZoom={2}
                     >
                         <Background color="#c9a84c" gap={24} size={0.5} />
@@ -282,16 +282,12 @@ const ViewMindmap = ({ onViewChange }) => {
                 )}
             </div>
 
-            {/* Selection Bar */}
             {selectedIds.length > 0 && (
                 <div className="flex flex-row items-center gap-4 px-4 py-3 bg-Darker-Primary border-2 border-Primary rounded-xl animate-fadeInUp mt-3">
                     <span className="text-Secondary text-sm font-bold">
-                        {currentMode == "merge" && `${selectedIds.length}`} Idea{currentMode == "merge" && "s"} Selected {mergingError && "(Please select 2 ideas for merging)"}
+                        {currentMode === "merge" && `${selectedIds.length}`} Idea{currentMode === "merge" && "s"} Selected {mergingError && "(Please select 2 ideas for merging)"}
                     </span>
-                    <button
-                        onClick={() => setSelectedIds([])}
-                        className="text-Secondary text-sm underline cursor-pointer"
-                    >
+                    <button onClick={() => setSelectedIds([])} className="text-Secondary text-sm underline cursor-pointer">
                         Clear
                     </button>
                     <button
@@ -304,18 +300,18 @@ const ViewMindmap = ({ onViewChange }) => {
             )}
             {mergingIdea && (
                 <MergeIdea
-                onCancel={() => setMergingIdea(false)}
-                caseName={currentCase.caseName}
-                caseDescription={currentCase.caseDescription || "No description provided."}
-                selectedIdea={selectedIds}
+                    onCancel={() => setMergingIdea(false)}
+                    caseName={currentCase.caseName}
+                    caseDescription={currentCase.caseDescription || "No description provided."}
+                    selectedIdea={selectedIds}
                 />
             )}
             {enhancingIdea && (
                 <EnhanceIdea
-                onCancel={() => setEnhancingIdea(false)}
-                caseName={currentCase.caseName}
-                caseDescription={currentCase.caseDescription || "No description provided."}
-                selectedIdea={selectedIds}
+                    onCancel={() => setEnhancingIdea(false)}
+                    caseName={currentCase.caseName}
+                    caseDescription={currentCase.caseDescription || "No description provided."}
+                    selectedIdea={selectedIds}
                 />
             )}
         </div>
@@ -323,8 +319,7 @@ const ViewMindmap = ({ onViewChange }) => {
 };
 
 const useEmailToName = (email) => {
-    const [name, setName] = useState(email)
-
+    const [name, setName] = useState(email);
     useEffect(() => {
         if (!email) return;
         const fetchName = async () => {
@@ -333,7 +328,6 @@ const useEmailToName = (email) => {
         };
         fetchName();
     }, [email]);
-
     return name;
 };
 
