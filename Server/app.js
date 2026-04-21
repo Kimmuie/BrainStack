@@ -397,9 +397,9 @@ app.post('/Brainstack/groups/:groupCode/groupCase/:caseCode/caseIdeas/:ideaCode/
  
         // Build the update object
         const updateFields = {};
- 
-        updateFields[`groupCase.${caseIndex}.caseIdeas.${ideaIndex}.ideaVoteUser`] = voterEmail;
- 
+        if (voteType !== 'skip'){
+            updateFields[`groupCase.${caseIndex}.caseIdeas.${ideaIndex}.ideaVoteUser`] = voterEmail;
+        }
         const incFields = {};
         if (voteType === 'agree')    incFields[`groupCase.${caseIndex}.caseIdeas.${ideaIndex}.ideaUpvote`]   = 1;
         if (voteType === 'disagree') incFields[`groupCase.${caseIndex}.caseIdeas.${ideaIndex}.ideaDownvote`] = 1;

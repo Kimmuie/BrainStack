@@ -42,7 +42,7 @@ const SolutionBar = ({ onSolutionCreated }) => {
 
   return (
     <>
-      <div className="flex flex-row w-full px-8 pt-7 gap-4  animate-fadeInUp">
+      <div className="flex flex-row w-full gap-4  animate-fadeInUp">
         <input
           type="text"
           placeholder="Search Solution"

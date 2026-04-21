@@ -33,7 +33,7 @@ const SolutionBox = ({ refresh }) => {
   if (loading) {
     return (
       <>
-      <div className="grid grid-cols-5 gap-2 max-w-5xl pt-3">
+      <div className="grid grid-cols-2 gap-2 max-w-5xl pt-3">
         {[...Array(groupCases.length)].map((_, i) => (
           <div
             key={i}
@@ -55,7 +55,7 @@ const SolutionBox = ({ refresh }) => {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-2 max-w-5xl pt-3">
+      <div className="grid grid-cols-2 gap-2 max-w-5xl pt-3">
         {groupCases.map((groupCase) => (
           <SolutionCard key={groupCase.caseCode} group={groupCase} />
         ))}

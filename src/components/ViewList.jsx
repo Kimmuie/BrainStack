@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchAPI } from "../service/fetchapi";
 import { useTheme } from "../contexts/ThemeContext";
 import { useLocation } from "react-router-dom";
+import MergeIdea from "../components/MergeIdea";
+import EnhanceIdea from "../components/EnhanceIdea";
 
 const ViewList = ({onViewChange}) => {
     const location = useLocation();
@@ -17,6 +19,10 @@ const ViewList = ({onViewChange}) => {
     const [totalIdeas, setTotalIdeas] = useState(0);
     const [votedCount, setVotedCount] = useState(0);
     const [unvotedIdeas, setUnvotedIdeas] = useState([]);
+    const [selectedIds, setSelectedIds] = useState([]);
+    const [mergingIdea, setMergingIdea] = useState(false);
+    const [enhancingIdea, setEnhancingIdea] = useState(false);
+    const [mergingError, setMergingError] = useState(false);
     const { icons } = useTheme();  
 
     // ฟังก์ชันแก้ไขเส้นทางไอคอน
@@ -52,6 +58,35 @@ const ViewList = ({onViewChange}) => {
         loadCase();
     }, [groupPath, caseCode, email]);
     
+    const handleSelect = useCallback((id) => {
+        if (currentMode === "") return;
+        if (currentMode === "enhance") {
+        setSelectedIds((prev) => prev.includes(id) ? [] : [id]);
+        return;
+    }
+
+        setSelectedIds((prev) =>
+            prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+        );
+    }, [currentMode]);
+
+    const handleModeToggle = (mode) => {
+        setCurrentMode((prev) => (prev === mode ? "" : mode));
+        setSelectedIds([]);
+    };
+
+    const handleSubmit = () => {
+        if (currentMode === "merge" && selectedIds.length > 1) {
+            setMergingIdea(true);
+        } else if (currentMode === "enhance") {
+            setEnhancingIdea(true);
+        } else {
+            setMergingError(true);
+             setTimeout(() => {
+                setMergingError(false);
+            }, 10000);
+        }
+    };
 
     return (
         <>
@@ -74,68 +109,113 @@ const ViewList = ({onViewChange}) => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col h-full">
-            <div className="flex flex-row w-full justify-between">
-                <div className="flex flex-row gap-3">
+            {/* Selection Bar */}
+            {selectedIds.length > 0 && (
+                <div className="flex flex-row items-center gap-4 px-4 py-3 bg-Darker-Primary border-2 border-Primary rounded-xl animate-fadeInUp">
+                    <span className="text-Secondary text-sm font-bold">
+                        {currentMode == "merge" && `${selectedIds.length}`} Idea{currentMode == "merge" && "s"} Selected {mergingError && "(Please select 2 ideas for merging)"}
+                    </span>
                     <button
-                    onClick={currentMode != "merge" ? () => setCurrentMode("merge") : () => setCurrentMode("")}
-                    className={`${currentMode == "merge" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} w-50 font-bold  px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
+                        onClick={() => setSelectedIds([])}
+                        className="text-Secondary text-sm underline cursor-pointer"
                     >
-                    Merge Ideas
+                        Clear
                     </button>
                     <button
-                    onClick={currentMode != "enhance" ? () => setCurrentMode("enhance") : () => setCurrentMode("")}
-                    className={`${currentMode == "enhance" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} w-50 font-bold px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
+                        onClick={handleSubmit}
+                        className="ml-auto bg-Primary text-Secondary font-bold px-4 py-2 rounded-lg cursor-pointer hover:bg-Primary/80 transition-colors"
                     >
-                    Enhance Ideas
+                        {currentMode === "merge" ? "Merge Selected" : "Enhance Selected"}
                     </button>
                 </div>
-                <div className="flex flex-row gap-3">
-                    <button
-                    className="font-bold bg-Primary text-Secondary hover:text-Primary px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Darker-Secondary cursor-pointer transition-colors"
-                    >
-                    Sort by Voting
-                    </button>
-                    <div>
+            )}
+            {mergingIdea && (
+                <MergeIdea
+                onCancel={() => setMergingIdea(false)}
+                caseName={currentCase.caseName}
+                caseDescription={currentCase.caseDescription || "No description provided."}
+                selectedIdea={selectedIds}
+                />
+            )}
+            {enhancingIdea && (
+                <EnhanceIdea
+                onCancel={() => setEnhancingIdea(false)}
+                caseName={currentCase.caseName}
+                caseDescription={currentCase.caseDescription || "No description provided."}
+                selectedIdea={selectedIds}
+                />
+            )}
+            <div className="flex flex-col h-full">
+                <div className="flex flex-row w-full justify-between">
+                    <div className="flex flex-row gap-3">
                         <button
-                        // onClick={() => {
-                        //     setCurrentView("list");
-                        //     onViewChange("list");
-                        // }}
-                        className={`${currentView == "list" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tl-lg border-2 border-r-1 border-b-0 border-Primary transition-colors`}
+                        onClick={() => handleModeToggle("merge")}
+                        className={`${currentMode == "merge" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} w-50 font-bold  px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
                         >
-                        <img src={currentView == "list" ? `${iconList}` : "/img/icon_list_gold.svg"} width="40" height="40" alt="list" className="p-1"/>
+                        Merge Ideas
                         </button>
                         <button
-                        onClick={() => {
-                            setCurrentView("mindmap");
-                            onViewChange("mindmap");
-                        }}
-                        className={`${currentView == "mindmap" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tr-lg border-2 border-l-1 border-b-0 border-Primary transition-colors`}
+                        onClick={() => handleModeToggle("enhance")}
+                        className={`${currentMode == "enhance" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} w-50 font-bold px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
                         >
-                        <img src={currentView == "mindmap" ? `${iconMindmap}` : "/img/icon_mindmap_gold.svg"} width="40" height="40" alt="mindmap" className="p-1"/>
+                        Enhance Ideas
                         </button>
                     </div>
+                    <div className="flex flex-row gap-3">
+                        <button
+                        className="font-bold bg-Primary text-Secondary hover:text-Primary px-4 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Darker-Secondary cursor-pointer transition-colors"
+                        >
+                        Sort by Voting
+                        </button>
+                        <div>
+                            <button
+                            // onClick={() => {
+                            //     setCurrentView("list");
+                            //     onViewChange("list");
+                            // }}
+                            className={`${currentView == "list" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tl-lg border-2 border-r-1 border-b-0 border-Primary transition-colors`}
+                            >
+                            <img src={currentView == "list" ? `${iconList}` : "/img/icon_list_gold.svg"} width="40" height="40" alt="list" className="p-1"/>
+                            </button>
+                            <button
+                            onClick={() => {
+                                setCurrentView("mindmap");
+                                onViewChange("mindmap");
+                            }}
+                            className={`${currentView == "mindmap" ? "bg-Primary" : "cursor-pointer bg-Darker-Secondary hover:bg-Darker-Primary"} font-bold px-4 h-full rounded-tr-lg border-2 border-l-1 border-b-0 border-Primary transition-colors`}
+                            >
+                            <img src={currentView == "mindmap" ? `${iconMindmap}` : "/img/icon_mindmap_gold.svg"} width="40" height="40" alt="mindmap" className="p-1"/>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            {(currentCase.caseIdeas ?? []).map((caseIdea, index) => (
-                <IdeaRow
-                    key={caseIdea._id}
-                    caseIdea={caseIdea}
-                    index={index}
-                    isFirst = {index === 0}
-                    isLast = {index === currentCase.caseIdeas.length - 1}
-                    currentMode = {currentMode}
-                />
-            ))}
+                {currentCase.caseIdeas?.length === 0 ? (
+                    <div className="flex justify-center w-full px-4 py-5 border-2 border-Primary text-Primary bg-Darker-Secondary text-base">
+                        No ideas have been sent for this case yet.
+                    </div>
+                ) : (
+                    <>
+                    {(currentCase.caseIdeas ?? []).map((caseIdea, index) => (
+                        <IdeaRow
+                            key={caseIdea._id}
+                            caseIdea={caseIdea}
+                            index={index}
+                            isFirst = {index === 0}
+                            isLast = {index === currentCase.caseIdeas.length - 1}
+                            currentMode = {currentMode}
+                            onSelect={handleSelect}
+                            isSelected={selectedIds.includes(caseIdea.ideaCode)}
+                        />
+                    ))}
+                </>
+                )}
             </div>
         </div>
         </>
     );
 };
 
-const IdeaRow = ({ caseIdea, index, isFirst, isLast, currentMode }) => {
-    const[ selectedIdea, setSelectedIdea ] = useState(false);
+const IdeaRow = ({ caseIdea, index, isFirst, isLast, currentMode, onSelect, isSelected }) => {
     const[ openComment, setOpenComment ] = useState(false);
     const { icons } = useTheme();  
     
@@ -164,7 +244,7 @@ const IdeaRow = ({ caseIdea, index, isFirst, isLast, currentMode }) => {
                             {index + 1}
                         </p>
                         {currentMode != "" &&
-                        <button onClick={() => setSelectedIdea(prev => !prev)} className={`cursor-pointer border-2 border-Primary w-4 h-4 ${selectedIdea ? "bg-Primary" : "bg-Secondary"}`} />
+                        <button onClick={() => onSelect(caseIdea.ideaCode)}  className={`cursor-pointer border-2 border-Primary w-4 h-4 ${currentMode === "merge" ? "" : "rounded-full"}  ${isSelected ? "bg-Primary" : "bg-Secondary"}`} />
                         }
                     </div>
                     <div className="gap-2 flex flex-col w-full">

@@ -46,7 +46,7 @@ const GroupBox = ({ refresh }) => {
 
   return (
     <>
-      <div className="grid grid-cols-5 gap-2 max-w-5xl pt-3">
+      <div className="grid grid-cols-3 gap-2 max-w-5xl pt-3">
         {groups.map((group) => (
           <GroupCard key={group.groupCode} group={group} />
         ))}
@@ -63,7 +63,7 @@ const GroupCard = ({ group }) => {
   return (
     <button 
       onClick={() => navigation(`/group/${group.groupCode}`)}
-      className="w-50 z-10 bg-Primary/80 hover:bg-Primary cursor-pointer border-2 border-Primary text-Black rounded-xl shadow-md overflow-hidden flex flex-col px-4 py-4 transition-colors duration-300 animate-fadeInUp">
+      className="w-full h-lg z-10 bg-Primary/80 hover:bg-Primary cursor-pointer border-2 border-Primary text-Black rounded-xl shadow-md overflow-hidden flex flex-col px-4 py-4 transition-colors duration-300 animate-fadeInUp">
       {/* Top row: Tag + Member count */}
       <div className="flex flex-row justify-between items-center">
         <div className="px-2 py-1 bg-Secondary/80 rounded-full mb-2 text-Primary text-xs font-bold flex items-center justify-center gap-1">

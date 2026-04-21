@@ -4,6 +4,8 @@ import { useLocation } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { ReactFlow, Background, Controls, useNodesState, useEdgesState } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import MergeIdea from "../components/MergeIdea";
+import EnhanceIdea from "../components/EnhanceIdea";
 
 const CaseNode = ({ data }) => (
     <div className="bg-Primary text-Secondary rounded-xl px-5 py-3 shadow-lg border-2 border-Secondary flex flex-col items-center min-w-[160px]">
@@ -72,7 +74,7 @@ const buildGraph = (currentCase, allIdeas, selectedIds, onSelect) => {
         const angle = (2 * Math.PI * index) / allIdeas.length - Math.PI / 2;
 
         // Safely resolve ID — handle _id, id, ideaId, idea_id, or fallback to index
-        const ideaId = idea._id ?? idea.id ?? idea.ideaId ?? idea.idea_id ?? `idea-${index}`;
+        const ideaId = idea.ideaCode ?? idea._id ?? idea.id ?? idea.ideaId ?? idea.idea_id ?? `idea-${index}`;
 
         // Safely resolve creator name — handle string, object with name/email/username
         const rawCreator = idea.ideaCreateBy;
@@ -103,7 +105,7 @@ const buildGraph = (currentCase, allIdeas, selectedIds, onSelect) => {
     });
 
     const edges = allIdeas.map((idea, index) => {
-        const ideaId = String(idea._id ?? idea.id ?? idea.ideaId ?? idea.idea_id ?? `idea-${index}`);
+        const ideaId = String(idea.ideaCode ?? idea._id ?? idea.id ?? idea.ideaId ?? idea.idea_id ?? `idea-${index}`);
         return {
             id: `edge-${ideaId}`,
             source: "case",
@@ -133,6 +135,9 @@ const ViewMindmap = ({ onViewChange }) => {
     const [unvotedIdeas, setUnvotedIdeas] = useState([]);
     const [allIdeas, setAllIdeas] = useState([]);
     const [selectedIds, setSelectedIds] = useState([]);
+    const [mergingIdea, setMergingIdea] = useState(false);
+    const [enhancingIdea, setEnhancingIdea] = useState(false);
+    const [mergingError, setMergingError] = useState(false);
     const { icons } = useTheme();  
 
     // ฟังก์ชันแก้ไขเส้นทางไอคอน
@@ -144,6 +149,10 @@ const ViewMindmap = ({ onViewChange }) => {
 
     const handleSelect = useCallback((id) => {
         if (currentMode === "") return;
+        if (currentMode === "enhance") {
+            setSelectedIds((prev) => prev.includes(id) ? [] : [id]);
+            return;
+        }
         setSelectedIds((prev) =>
             prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
         );
@@ -201,6 +210,19 @@ const ViewMindmap = ({ onViewChange }) => {
         setSelectedIds([]);
     };
 
+    const handleSubmit = () => {
+        if (currentMode === "merge" && selectedIds.length > 1) {
+            setMergingIdea(true);
+        } else if (currentMode === "enhance") {
+            setEnhancingIdea(true);
+        } else {
+            setMergingError(true);
+             setTimeout(() => {
+                setMergingError(false);
+            }, 10000);
+        }
+    };
+
     return (
         <div className="flex flex-col transition-colors duration-300 animate-fadeInUp w-full h-full">
             <div className="flex flex-row w-full justify-between">
@@ -209,13 +231,13 @@ const ViewMindmap = ({ onViewChange }) => {
                         onClick={() => handleModeToggle("merge")}
                         className={`${currentMode === "merge" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} font-bold px-4 py-2 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
                     >
-                        Merge Ideas {currentMode === "merge" && selectedIds.length > 0 && `(${selectedIds.length})`}
+                        Merge Ideas
                     </button>
                     <button
                         onClick={() => handleModeToggle("enhance")}
                         className={`${currentMode === "enhance" ? "bg-Primary text-Secondary" : "bg-Darker-Secondary text-Primary"} font-bold px-4 py-2 rounded-t-lg border-2 border-b-0 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors`}
                     >
-                        Enhance Ideas {currentMode === "enhance" && selectedIds.length > 0 && `(${selectedIds.length})`}
+                        Enhance Ideas
                     </button>
                 </div>
                 <div className="flex flex-row gap-3">
@@ -264,7 +286,7 @@ const ViewMindmap = ({ onViewChange }) => {
             {selectedIds.length > 0 && (
                 <div className="flex flex-row items-center gap-4 px-4 py-3 bg-Darker-Primary border-2 border-Primary rounded-xl animate-fadeInUp mt-3">
                     <span className="text-Secondary text-sm font-bold">
-                        {selectedIds.length} Ideas Selected
+                        {currentMode == "merge" && `${selectedIds.length}`} Idea{currentMode == "merge" && "s"} Selected {mergingError && "(Please select 2 ideas for merging)"}
                     </span>
                     <button
                         onClick={() => setSelectedIds([])}
@@ -273,11 +295,28 @@ const ViewMindmap = ({ onViewChange }) => {
                         Clear
                     </button>
                     <button
+                        onClick={handleSubmit}
                         className="ml-auto bg-Primary text-Secondary font-bold px-4 py-2 rounded-lg cursor-pointer hover:bg-Primary/80 transition-colors"
                     >
                         {currentMode === "merge" ? "Merge Selected" : "Enhance Selected"}
                     </button>
                 </div>
+            )}
+            {mergingIdea && (
+                <MergeIdea
+                onCancel={() => setMergingIdea(false)}
+                caseName={currentCase.caseName}
+                caseDescription={currentCase.caseDescription || "No description provided."}
+                selectedIdea={selectedIds}
+                />
+            )}
+            {enhancingIdea && (
+                <EnhanceIdea
+                onCancel={() => setEnhancingIdea(false)}
+                caseName={currentCase.caseName}
+                caseDescription={currentCase.caseDescription || "No description provided."}
+                selectedIdea={selectedIds}
+                />
             )}
         </div>
     );
