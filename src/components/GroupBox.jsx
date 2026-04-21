@@ -46,7 +46,7 @@ const GroupBox = ({ refresh }) => {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-2 max-w-5xl pt-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 px-2 sm:px-4 lg:px-8 xl:px-0 w-full sm:w-fit xl:max-w-5xl pt-3">
         {groups.map((group) => (
           <GroupCard key={group.groupCode} group={group} />
         ))}

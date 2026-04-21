@@ -9,7 +9,7 @@ const MainPage = () => {
   return (
     <>
       <div className="h-full w-full flex flex-col items-center justify-center relative overflow-hidden">
-          <section className="w-6xl bg-Secondary flex flex-col items-center min-h-screen px-8 pb-8">
+          <section className="w-full sm:w-full xl:w-6xl bg-Secondary flex flex-col items-center min-h-screen px-0 lg:px-8 pb-8">
             <Display />
             <Toolsbar onGroupCreated={() => setRefresh(prev => !prev)}/>
             <GroupBox refresh={refresh}/>

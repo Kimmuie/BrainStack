@@ -106,10 +106,10 @@ const Navbar = () => {
         <ul className="items-center flex space-x-6 animate-fadeInUp">
             <button onClick={() => navigate("/home")} className="flex flex-row items-center gap-2 cursor-pointer">
                 <img src="/img/brainstack_logo.png" alt="Profile" className="w-15" />
-                <li className="text-Primary text-2xl font-bold">BrainStack</li>
+                <li className="text-Primary text-2xl font-bold hidden sm:block">BrainStack</li>
             </button>
             <button 
-                className="text-Secondary bg-Primary text-base font-bold border-2 px-3 py-1 rounded-full cursor-pointer">
+                className="text-Secondary bg-Primary text-base font-bold border-2 px-3 py-1 rounded-full cursor-pointer hidden sm:block">
             {isGroupPage && groupName ? groupName : "All Group"}
             </button>
         </ul>
@@ -123,7 +123,7 @@ const Navbar = () => {
                 onClick={() => setIsUserOpen((prev) => !prev)}
                 className="flex flex-row items-center justify-center space-x-6 cursor-pointer"
                 >
-                    <h1 className="text-Primary text-base font-bold">{user.username ? (user.username) : ("None")}</h1>
+                    <h1 className="text-Primary text-base font-bold hidden sm:block">{user.username ? (user.username) : ("None")}</h1>
                     <img src={iconUser} alt="User" className="w-10 p-1.5 rounded-full border-2 border-Primary bg-Primary hover:bg-Darker-Primary " />
                 </button>
             </>

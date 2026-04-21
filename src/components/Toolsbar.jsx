@@ -64,31 +64,33 @@ const Toolsbar = ({ onGroupCreated }) => {
 
   return (
     <>
-      <div className="flex flex-row w-full px-8 pt-7 animate-fadeInUp">
+      <div className="flex flex-col sm:flex-row w-full px-2 gap-2 sm:gap-4 sm:px-4 lg:px-8 pt-7 animate-fadeInUp">
         <div className="flex flex-row w-full rounded-full border-2 border-Primary py-2 px-2">
           <input
             type="text"
             placeholder="Add Group with Code"
             value={enteredCode}
             onChange={(e) => setEnteredCode(e.target.value)}
-            className="text-Primary w-full px-4 focus:outline-none focus:ring-0 focus:border-transparent"
+            className="text-Primary text-xs sm:text-base w-full px-0 sm:px-4 focus:outline-none focus:ring-0 focus:border-transparent"
           />
           <button
             onClick={handleJoinGroup}
-            className="font-bold ml-4 bg-Primary text-Secondary px-3 py-1 w-50 rounded-full border-2 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors"
+            className="text-xs sm:text-base font-bold ml-4 bg-Primary text-Secondary px-1 sm:px-3 py-1 sm:py-1 w-50 rounded-full border-2 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors"
           >
             Join Group
           </button>
         </div>
+        <div className="flex flex-row w- gap-2 sm:gap-4">
         <button
           onClick={() => setIsCreatingGroup(true)}
-          className="w-50 font-bold ml-4 bg-Primary text-Secondary px-4 py-2 rounded-full border-2 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors"
+          className="w-full sm:w-50 text-xs sm:text-base font-bold bg-Primary text-Secondary px-1 sm:px-3 py-1 sm:py-1 rounded-full border-2 border-Primary hover:bg-Primary/80 cursor-pointer transition-colors"
         >
           Create Group
         </button>
-        <button className="font-bold ml-4 bg-Primary px-4 py-2 rounded-full border-2 border-Primary hover:Primary hover:bg-Darker-Primary cursor-pointer transition-colors">
-          <img src={iconFilterOff} alt="Filter" className="w-10 h-10" />
+        <button className="w-fit font-bold bg-Primary px-2 sm:px-4 py-0 sm:py-2 rounded-full border-2 border-Primary hover:Primary hover:bg-Darker-Primary cursor-pointer transition-colors">
+          <img src={iconFilterOff} alt="Filter" className="w-6 sm:w-10 h-10 " />
         </button>
+        </div>
       </div>
       {isCreatingGroup && (
         <CreateGroup
