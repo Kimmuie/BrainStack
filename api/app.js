@@ -569,7 +569,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 
 
 
-// start api // redeploy
+// start api 
 const startServer = async () => {
   await client.connect();
   await initDB();
