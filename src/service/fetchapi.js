@@ -1,5 +1,5 @@
 export const fetchAPI = async (endpoint, method = 'GET', body = null) => {
-    const base_url = `${import.meta.env.VITE_API_URL}/ฺBrainstack`;//redeploy
+    const base_url = `${import.meta.env.VITE_API_URL}/Brainstack`;
 
     try {   
         const options = {
