@@ -5,7 +5,9 @@
     { "src": "api/app.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/Brainstack/(.*)", "dest": "/api/app.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "/Brainstack/(.)", "dest": "/api/app.js" },
+    { "src": "/assets/(.)", "dest": "/assets/$1" },
+    { "src": "/(.\.(js|css|png|jpg|svg|ico|ttf|woff2?))", "dest": "/$1" },
+    { "src": "/(.)", "dest": "/index.html" }
   ]
 }
