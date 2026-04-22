@@ -134,7 +134,7 @@ const initDB = async () => {
 
 
 //Route for Users
-app.post('/Brainstack/users', async (req, res) => {
+app.post('/users', async (req, res) => {
     const { email, username, theme } = req.body;
 
     try {
@@ -148,7 +148,7 @@ app.post('/Brainstack/users', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.get('/Brainstack/users/:email', async (req, res) => {
+app.get('/users/:email', async (req, res) => {
     const { email } = req.params;
 
     try {
@@ -159,7 +159,7 @@ app.get('/Brainstack/users/:email', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.post('/Brainstack/users/:email/tag', async (req, res) => {
+app.post('/users/:email/tag', async (req, res) => {
     const { email } = req.params;
     const { tagName, tagGroup } = req.body;
 
@@ -173,7 +173,7 @@ app.post('/Brainstack/users/:email/tag', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.delete('/Brainstack/users/:email', async (req, res) => {
+app.delete('/users/:email', async (req, res) => {
     const { email } = req.params;
 
     try {
@@ -187,7 +187,7 @@ app.delete('/Brainstack/users/:email', async (req, res) => {
     }
 });
 
-app.patch('/Brainstack/users/:email', async (req, res) => {
+app.patch('/users/:email', async (req, res) => {
     const { email } = req.params;
     const { email: _, group, tag, ...safeUpdates } = req.body; // กัน field ออก
 
@@ -211,7 +211,7 @@ app.patch('/Brainstack/users/:email', async (req, res) => {
 
 
 //Route for Group
-app.post('/Brainstack/groups', async (req, res) => {
+app.post('/groups', async (req, res) => {
     const { groupName, groupDescription, creatorEmail } = req.body;
 
     try {
@@ -237,7 +237,7 @@ app.post('/Brainstack/groups', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.get('/Brainstack/groups/:groupCode', async (req, res) => {
+app.get('/groups/:groupCode', async (req, res) => {
     const { groupCode } = req.params;
 
     try {
@@ -248,7 +248,7 @@ app.get('/Brainstack/groups/:groupCode', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.get('/Brainstack/users/:email/groups', async (req, res) => {
+app.get('/users/:email/groups', async (req, res) => {
     const { email } = req.params;
     try {
         // 1. ดึง user เพื่อเอา groupCode array
@@ -265,7 +265,7 @@ app.get('/Brainstack/users/:email/groups', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.post('/Brainstack/groups/:groupCode/join', async (req, res) => {
+app.post('/groups/:groupCode/join', async (req, res) => {
     const { groupCode } = req.params;
     const { email } = req.body;
 
@@ -284,7 +284,7 @@ app.post('/Brainstack/groups/:groupCode/join', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-app.delete('/Brainstack/groups/:groupCode', async (req, res) => {
+app.delete('/groups/:groupCode', async (req, res) => {
     const { groupCode } = req.params;
 
     try {
@@ -307,7 +307,7 @@ app.delete('/Brainstack/groups/:groupCode', async (req, res) => {
 
 
 //Route for Case
-app.post('/Brainstack/groups/:groupCode/groupCase', async (req, res) => {
+app.post('/groups/:groupCode/groupCase', async (req, res) => {
     const { caseName, caseDescription } = req.body;
     const { groupCode } = req.params;
 
@@ -337,7 +337,7 @@ app.post('/Brainstack/groups/:groupCode/groupCase', async (req, res) => {
 });
 
 //Route for Idea
-app.post('/Brainstack/groups/:groupCode/groupCase/:caseCode/caseIdeas', async (req, res) => {
+app.post('/groups/:groupCode/groupCase/:caseCode/caseIdeas', async (req, res) => {
     const { groupCode, caseCode } = req.params;
     const { ideaDescription, ideaCreateBy } = req.body;
     const ideaCode = crypto.randomBytes(6).toString('hex');
@@ -365,7 +365,7 @@ app.post('/Brainstack/groups/:groupCode/groupCase/:caseCode/caseIdeas', async (r
     }
 });
 
-app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode/caseIdeas', async (req, res) => {
+app.get('/groups/:groupCode/groupCase/:caseCode/caseIdeas', async (req, res) => {
     const { groupCode, caseCode } = req.params;
     try {
         const group = await db.collection('groups').findOne({ groupCode });
@@ -381,7 +381,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode/caseIdeas', async (re
     }
 });
  
-app.post('/Brainstack/groups/:groupCode/groupCase/:caseCode/caseIdeas/:ideaCode/vote', async (req, res) => {
+app.post('/groups/:groupCode/groupCase/:caseCode/caseIdeas/:ideaCode/vote', async (req, res) => {
     const { groupCode, caseCode, ideaCode } = req.params;
     const { voteType, voterEmail, comment } = req.body;
  
@@ -427,7 +427,7 @@ app.post('/Brainstack/groups/:groupCode/groupCase/:caseCode/caseIdeas/:ideaCode/
     }
 });
 
-app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) => {
+app.get('/groups/:groupCode/groupCase/:caseCode', async (req, res) => {
     const { groupCode, caseCode } = req.params;
     try {
         const group = await db.collection('groups').findOne({ groupCode });
@@ -442,7 +442,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
     }
 });
 
-// app.post("/Brainstack/groups/:groupCode/groupCase/:caseIndex/idea/:index/downvote", async (req, res) => {
+// app.post("/groups/:groupCode/groupCase/:caseIndex/idea/:index/downvote", async (req, res) => {
 //     const { groupCode, index } = req.params;
 
 //     try {
@@ -455,7 +455,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 //         res.status(500).json({ error: err.message });
 //     }
 // });
-// app.post("/Brainstack/groups/:groupCode/groupCase/:caseIndex/idea/:index/upvote", async (req, res) => {
+// app.post("/groups/:groupCode/groupCase/:caseIndex/idea/:index/upvote", async (req, res) => {
 //     const { groupCode, index } = req.params;
 
 //     try {
@@ -468,7 +468,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 //         res.status(500).json({ error: err.message });
 //     }
 // });
-// app.delete('/Brainstack/groups/:groupCode/groupCase/:caseIndex/idea/:index', async (req, res) => {
+// app.delete('/groups/:groupCode/groupCase/:caseIndex/idea/:index', async (req, res) => {
 //     const { groupCode, index } = req.params;
 //     try {
 //         const group = await db.collection('groups').findOne({ groupCode });
@@ -487,7 +487,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 //         res.status(500).json({ error: err.message });
 //     }
 // });
-// app.delete('/Brainstack/groups/:groupCode/groupCase/:caseIndex/idea/:index/upvote', async (req, res) => {
+// app.delete('/groups/:groupCode/groupCase/:caseIndex/idea/:index/upvote', async (req, res) => {
 //     const { groupCode, index } = req.params;
 //     try {
 //         await db.collection('groups').updateOne(
@@ -499,7 +499,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 //         res.status(500).json({ error: err.message });
 //     }
 // });
-// app.delete('/Brainstack/groups/:groupCode/groupCase/:caseIndex/idea/:index/downvote', async (req, res) => {
+// app.delete('/groups/:groupCode/groupCase/:caseIndex/idea/:index/downvote', async (req, res) => {
 //     const { groupCode, index } = req.params;
 //     try {
 //         await db.collection('groups').updateOne(
@@ -515,7 +515,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 
 
 // // Route for Comments
-// app.post("/Brainstack/groups/:groupCode/case/:caseIndex/idea/:ideaIndex/comment", async (req, res) => {
+// app.post("/groups/:groupCode/case/:caseIndex/idea/:ideaIndex/comment", async (req, res) => {
 //     const { groupCode, index } = req.params;
 //     const { commentData, commentUser } = req.body;
 //     try {
@@ -531,7 +531,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 //         res.status(500).json({ error: err.message });
 //     }
 // });
-// app.get('/Brainstack/groups/:groupCode/case/:caseIndex/idea/:index/comment', async (req, res) => {
+// app.get('/groups/:groupCode/case/:caseIndex/idea/:index/comment', async (req, res) => {
 //     const { groupCode, index } = req.params;
 //     try {
 //         const group = await db.collection('groups').findOne({ groupCode });
@@ -544,7 +544,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 //         res.status(500).json({ error: err.message });
 //     }
 // });
-// app.delete('/Brainstack/groups/:groupCode/case/:caseIndex/idea/:index/comment/:commentIndex', async (req, res) => {
+// app.delete('/groups/:groupCode/case/:caseIndex/idea/:index/comment/:commentIndex', async (req, res) => {
 //     const { groupCode, index, commentIndex } = req.params;
 //     try {
 //         const group = await db.collection('groups').findOne({ groupCode });
