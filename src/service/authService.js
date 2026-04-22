@@ -13,7 +13,7 @@ export const register = async (email, password, username) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user = result.user;
 
-    await fetch(`${API}/Brainstack/users`, {
+    await fetch(`${API}/Brainstack/users`, { //gfgj
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -29,7 +29,7 @@ export const register = async (email, password, username) => {
     throw err;
   }
 };
-
+// test
 // ==================== Login ====================
 export const login = async (email, password) => {
   try {
