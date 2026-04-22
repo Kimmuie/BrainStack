@@ -5,6 +5,10 @@
 
 @import "tailwindcss";
 
+@layer base {
+  @import "@xyflow/react/dist/style.css";
+}
+
 * {
   box-sizing: border-box;
 }
@@ -13,9 +17,10 @@ html { scroll-behavior: smooth;}
 
 body {
   background-color: var(--color-Secondary);
-  background-image: url("/img/brain_pattern.jpg");
+  background-image: url("/img/brain_pattern.png");
   background-repeat: repeat;
-  background-blend-mode: multiply;
+  /* background-blend-mode:exclusion; */
+  /* background-blend-mode: screen; */
   background-size: 500px 500px;
 }
 
@@ -24,16 +29,33 @@ body {
   --color-Primary: #D2AB61;
   --color-Darker-Primary: #c09957;
   --color-Secondary: #313647;
-  /* FAF8F1 Bright Theme */
   --color-Darker-Secondary: #2c303f;
   --color-Tertiary: #FAF8F1;
+  --color-Darker-Tertiary: #E1DFD8;
   --color-custom-red: #DC0E0E;
+  --color-custom-green: #0edc0e;
 
   --animate-fadeInUp: fadeInUp 0.5s ease-in-out;
   @keyframes fadeInUp {
     0% {
       opacity: 0;
       transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+    --animate-popUp: popUp 0.5s ease-in-out;
+  @keyframes popUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(-10px);
     }
     100% {
       opacity: 1;

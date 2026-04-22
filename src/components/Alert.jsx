@@ -5,7 +5,7 @@ import ClickOutside from "./ClickOutside";
 const Alert = ({ onConfirm, onCancel, Header, Description }) => {
 
   return (
-    <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 animate-fadeDown z-90">
+    <div className="fixed inset-0 bg-transparent flex items-center justify-center p-4 animate-popUp z-90">
       <ClickOutside className="border-1 border-custom-red border-t-8 border-t-ellRed  bg-Tertiary rounded-sm shadow-lg max-w-sm w-full flex flex-col h-fit" onOutsideClick={onCancel}>
         <div className="flex flex-row justify-start items-center h-full mt-3 ml-3">
           <img src="/img/icon_alert_gold.svg" width="40" height="40" alt="alert"/>

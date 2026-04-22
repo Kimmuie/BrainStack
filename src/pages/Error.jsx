@@ -192,7 +192,7 @@ const NotFound = () => {
 
       {/* Particle system */}
 
-      <div className="flex-col px-8 py-8 z-10 w-full h-screen bg-White flex justify-center items-center text-center text-Black relative">
+      <div className="flex-col px-8 py-8 z-10 w-full h-screen flex justify-center items-center text-center text-Tertiary relative">
         <div className="text-gradient glitch font-black my-18 text-9xl" style={{ textShadow: '0 0 50px rgba(255, 255, 255, 0.3)' }}>
           404
         </div>

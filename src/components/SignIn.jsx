@@ -4,31 +4,38 @@ import { signInWithPopup } from "firebase/auth";
 import { fetchAPI } from "../service/fetchapi";
 
 const SignIn = ({ setUser }) => {
-    const handleClick = async () => {
-
-        try {
+const handleClick = async () => {
+    try {
         const data = await signInWithPopup(auth, provider);
         const email = data.user.email;
         const username = data.user.displayName;
 
-        const existingUser = await fetchAPI(`/users/${email}`, "GET");
-        
-        if(existingUser) {
+        let existingUser = null;
+        try {
+            existingUser = await fetchAPI(`/users/${email}`, "GET");
+        } catch (err) {
+            console.log("User not found, will create new one");
+        }
+
+        if (existingUser) {
             localStorage.setItem("email", email);
-            setUser(email);
-        } else{
-            const newUser = await fetchAPI('/users', "POST", { email, username, theme: "dark" });
+        } else {
+            const newUser = await fetchAPI('/users', "POST", { email, username, theme: "dark", group: [] });
             if (newUser) {
                 localStorage.setItem('email', email);
-                console.log("Log In Success");
+            } else {
+                console.error("Failed to create user");
+                return;
             }
         }
-        
+
+        setUser(email);
+        window.location.reload()
         console.log("Log In Success");
-        } catch (err) {
+    } catch (err) {
         console.error("Login error:", err.message);
-        }
-    };
+    }
+};
 
     return (
         <button 
