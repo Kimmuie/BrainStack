@@ -4,9 +4,8 @@
     { "src": "package.json", "use": "@vercel/static-build" },
     { "src": "api/app.js", "use": "@vercel/node" }
   ],
-  "rewrites": [
-    { "source": "/api/(.)", "destination": "/api/app.js/$1" },
-    { "source": "/Brainstack/(.)", "destination": "/api/app.js/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "src": "/Brainstack/(.*)", "dest": "/api/app.js" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
