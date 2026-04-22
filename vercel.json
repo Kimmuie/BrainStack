@@ -5,8 +5,8 @@
     { "src": "api/app.js", "use": "@vercel/node" }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/app.js" },
-    { "source": "/Brainstack/(.*)", "destination": "/api/app.js" },
+    { "source": "/api/(.)", "destination": "/api/app.js/$1" },
+    { "source": "/Brainstack/(.)", "destination": "/api/app.js/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
