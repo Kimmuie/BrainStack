@@ -569,7 +569,7 @@ app.get('/groups/:groupCode/groupCase/:caseCode', async (req, res) => {
 
 
 
-// start api
+// start api // redeploy
 const startServer = async () => {
   await client.connect();
   await initDB();
