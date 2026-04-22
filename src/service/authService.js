@@ -13,7 +13,7 @@ export const register = async (email, password, username) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     const user = result.user;
 
-    await fetch(`${API}/api/users`, {
+    await fetch(`${API}/Brainstack/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
