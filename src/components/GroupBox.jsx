@@ -18,7 +18,7 @@ const GroupBox = ({ refresh }) => {
     };
 
     loadGroups();
-  }, [refresh]);
+  }, [refresh, email]);
 
   // แสดงสถานะโหลด 
   if (loading) {

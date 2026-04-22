@@ -30,6 +30,7 @@ const handleClick = async () => {
         }
 
         setUser(email);
+        window.location.reload()
         console.log("Log In Success");
     } catch (err) {
         console.error("Login error:", err.message);

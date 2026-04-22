@@ -98,7 +98,7 @@ const SolutionCard = ({ group }) => {
           <p className="text-Secondary text-sm font-bold break-words truncate">
             {group.caseName}
           </p>
-          <p className="text-Secondary text-sm break-words w-54 h-20 text-start">
+          <p className="text-Secondary text-sm break-words w-54 h-20 text-start whitespace-pre-line truncate">
             {group.caseDescription || "No description provided."}
           </p>
         </div>
