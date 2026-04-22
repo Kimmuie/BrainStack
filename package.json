@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "install-all": "npm install && cd api && npm install"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",

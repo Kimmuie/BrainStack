@@ -570,10 +570,7 @@ app.get('/Brainstack/groups/:groupCode/groupCase/:caseCode', async (req, res) =>
 
 
 // start api
-const start = async () => {
-    await client.connect();
-    await initDB();
-    app.listen(3000, () => console.log("Server running on port 3000"));
-};
+await client.connect();
+await initDB();
 
-start();
+module.exports = app
