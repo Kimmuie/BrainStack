@@ -1,23 +1,12 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build"
-    },
-    {
-      "src": "api/app.js",
-      "use": "@vercel/node"
-    }
+    { "src": "package.json", "use": "@vercel/static-build" },
+    { "src": "api/app.js", "use": "@vercel/node" }
   ],
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "api/app.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/api/(.)", "destination": "api/app.js" },
+    { "source": "/Brainstack/(.)", "destination": "api/app.js" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
