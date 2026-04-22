@@ -7,15 +7,15 @@
 ### 🔗 Live Website: https://brain-stack-theta.vercel.app/
 
 ### 🚀 Features
-1. Collaborative Workspaces
+1. **Collaborative Workspaces**
   - User Authentication: Integrated with Firebase Auth for a personalized experience
   - Secure Access: Join groups easily via unique codes or invite links
   - Real-time Interaction: Propose ideas and see feedback from teammates instantly.
-2. Structured Ideation Tools
-  - Flashcard Voting: Ideas are presented as a deck of cards. Users can quickly swipe or click to "Agree" or "Disagree," reducing decision paralysis.
+2. **Structured Ideation Tools**
+  - Flashcard Voting: Ideas are presented as a deck of cards. Users can quickly click to "Agree" or "Disagree," reducing decision paralysis.
   - Problem Context: Keep the goal in sight with a "Question Card" that displays the project task while you brainstorm.
   - Discussion Threads: Deep-dive into specific ideas with integrated micro-comments.
-3. Data-Driven Selection
+3. **Data-Driven Selection**
   - All Idea Overview: A dashboard that summarizes voting results, showing Upvotes, Downvotes, and Comment counts.
   - Smart Sorting: Automatically rank ideas by quality or engagement (votes/comments) to find the best concepts quickly.
   - List/Mindmap View: A visual canvas to see the relationship between different tasks and sub-ideas.
