@@ -6,6 +6,8 @@ import { useLocation } from "react-router-dom";
 import CreateIdea from "./CreateIdea";
 import VoteIdea from "./VoteIdea";
 
+import { io, Socket } from "socket.io-client";
+const socket = io("http://localhost:3000");
 
 const SolutionBox = ({ refresh }) => {
   const location = useLocation();
@@ -19,14 +21,25 @@ const SolutionBox = ({ refresh }) => {
     useEffect(() => {
     if (!email) return;
 
-    const loadGroups = async () => {
+    const loadCase = async () => {
       setLoading(true);
       const data = await fetchAPI(`/groups/${groupPath}`, "GET");
       if (data) setGroupCases(data.groupCase ?? []);
       setLoading(false);
     };
 
-    loadGroups();
+    loadCase();
+
+    const reloadCases = async ({ groupCode }) => {
+      if(groupCode !== groupPath) return;
+
+      loadCase();
+    }
+
+    socket.on('groupCase:created', reloadCases);
+    return () => {
+      socket.off('groupCase:created', reloadCases);
+    };
   }, [refresh]);
 
   // แสดงสถานะโหลด 

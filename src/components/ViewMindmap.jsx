@@ -11,6 +11,9 @@ import "@xyflow/react/dist/style.css";
 import MergeIdea from "../components/MergeIdea";
 import EnhanceIdea from "../components/EnhanceIdea";
 
+import { io, Socket } from "socket.io-client";
+const socket = io("http://localhost:3000");
+
 const CaseNode = ({ data }) => (
     <div className="bg-Primary text-Secondary rounded-xl px-5 py-3 shadow-lg border-2 border-Secondary flex flex-col items-center min-w-[160px]">
         <span className="text-xs font-bold opacity-70 leading-none mb-1">CASE</span>
@@ -199,6 +202,16 @@ const ViewMindmap = ({ onViewChange }) => {
             setLoading(false);
         };
         loadIdeas();
+
+        const reloadIdeas = async ({ groupCode }) => {
+            if(groupCode !== groupPath) return;
+            
+            loadIdeas();
+        };
+        socket.on('caseIdea:created', reloadIdeas);
+        return () => {
+            socket.off('caseIdea:created', reloadIdeas);
+        };
     }, [groupPath, caseCode, email]);
 
     useEffect(() => {

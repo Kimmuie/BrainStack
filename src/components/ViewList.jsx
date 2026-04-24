@@ -5,6 +5,9 @@ import { useLocation } from "react-router-dom";
 import MergeIdea from "../components/MergeIdea";
 import EnhanceIdea from "../components/EnhanceIdea";
 
+import { io, Socket } from "socket.io-client";
+const socket = io("http://localhost:3000");
+
 const ViewList = ({onViewChange}) => {
     const location = useLocation();
     const pathParts = location.pathname.split('/');
@@ -29,6 +32,11 @@ const ViewList = ({onViewChange}) => {
     const iconList = icons.list;
     const iconMindmap = icons.mindmap;
 
+    const loadCase = useCallback(async () => {
+        const data = await fetchAPI(`/groups/${groupPath}/groupCase/${caseCode}`, "GET");
+        if (data) setCurrentCase(data.groupCase ?? {});
+    }, [groupPath, caseCode]);
+
     useEffect(() => {
         const loadIdeas = async () => {
             setLoading(true);
@@ -45,17 +53,37 @@ const ViewList = ({onViewChange}) => {
             setLoading(false);
         };
         loadIdeas();
+
+        const reloadIdeas = async ({ groupCode, caseCode: incomingCaseCode }) => {
+            if (groupCode !== groupPath) return;
+            if (incomingCaseCode !== caseCode) return;
+            
+            console.log("✅ calling loadIdeas");
+            await loadIdeas();
+            await loadCase(); 
+        };
+        socket.on('caseIdea:created', reloadIdeas);
+        socket.on('Vote:created', reloadIdeas);
+        return () => {
+            socket.off('caseIdea:created', reloadIdeas);
+            socket.off('Vote:created', reloadIdeas);
+        };
     }, [groupPath, caseCode, email]);
 
     useEffect(() => {
         if (!email) return;
-        const loadCase = async () => {
-            setLoading(true);
-            const data = await fetchAPI(`/groups/${groupPath}/groupCase/${caseCode}`, "GET");
-            if (data) setCurrentCase(data.groupCase ?? {});
-            setLoading(false);
-        };
         loadCase();
+
+        const reloadCases = async ({ groupCode }) => {
+            if(groupCode !== groupPath) return;
+
+            loadCase();
+        }
+
+        socket.on('groupCase:created', reloadCases);
+        return () => {
+            socket.off('groupCase:created', reloadCases);
+        };
     }, [groupPath, caseCode, email]);
     
     const handleSelect = useCallback((id) => {
